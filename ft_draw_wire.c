@@ -6,30 +6,29 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2013/12/22 22:03:42 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/08 18:10:53 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mlx.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "fdf.h"
 #include <libft.h>
 
-void	ft_draw_wire(int tmp, t_mlx *m, int i, int j)
+void	ft_draw_wire(t_mlx *m, int i)
 {
-	int		yM;
-
-	yM = ft_atoi(m->stock[i][j]);
-	if (j > 0)
+	if (i > 0 && (i - 1) % m->width != 0)
 	{
-		m->x2 = m->x1 - 20;
-		m->y2 = m->y1 + yM - ft_atoi(m->stock[i][j - 1]);
+	printf("width = %i, i = %i, i width = %i;\n", m->width, i, i % m->width);
+		m->x2 = (m->coordinates[i - 1][0] / m->coordinates[i - 1][2]) * m->width;
+		m->y2 = (m->coordinates[i - 1][1] / m->coordinates[i - 1][2]) * m->depth;
 		ft_draw_line(m);
 	}
-	if (i > 0 && j < tmp)
+	if (i + m->width + 1 < m->count)
 	{
-		m->x2 = m->x1 + 20;
-		m->y2 = m->y1 - 20 + yM - ft_atoi(m->stock[i - 1][j]);
+		m->x2 = (m->coordinates[i + m->width + 1][0] / m->coordinates[i + m->width + 1][2]) * m->width;
+		m->y2 = (m->coordinates[i + m->width + 1][1] / m->coordinates[i + m->width + 1][2]) * m->depth;
 		ft_draw_line(m);
 	}
 }
