@@ -18,9 +18,8 @@
 
 void	ft_draw_wire(t_mlx *m, int i)
 {
-	if (i > 0 && (i - 1) % m->width != 0)
+	if (i > 0 && m->coordinates[i - 1][1] == m->coordinates[i][1])
 	{
-	printf("width = %i, i = %i, i width = %i;\n", m->width, i, i % m->width);
 		m->x2 = (m->coordinates[i - 1][0] / m->coordinates[i - 1][2]) * m->width;
 		m->y2 = (m->coordinates[i - 1][1] / m->coordinates[i - 1][2]) * m->depth;
 		ft_draw_line(m);

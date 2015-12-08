@@ -28,7 +28,7 @@ int		expose_hook(t_mlx *m)
 	int		i;
 
 	i = 0;
-	while (i < m->count - 1)
+	while (i < m->count)
 	{
 		m->x1 = (m->coordinates[i][0] / m->coordinates[i][2]) * m->width;
 		m->y1 = (m->coordinates[i][1] / m->coordinates[i][2]) * m->depth;
