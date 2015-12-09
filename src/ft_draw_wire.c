@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 17:59:27 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/09 18:04:47 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ void	update_matrix(t_mlx *m)
 
 void	create_matrix(t_mlx *m)
 {
-	m->rotation_x = 0;
-	m->rotation_y = 0;
+	m->rotation_x = PI * 1.75;
+	m->rotation_y = 0.25;
 	m->rotation_z = 0;
 	m->pos_x = 0;
 	m->pos_y = 0;
