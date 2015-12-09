@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:19:01 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 17:40:11 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/09 18:21:52 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
 			|| (l.x > l.x_max && l.x_max - l.x_min < 0))
 	{
 		tmp_y = ft_coord(l, x, y);
-		if (l.x < WINWIDTH && tmp_y < WINHEIGHT)
+		if (l.x > 0 && l.x < WINWIDTH && tmp_y < WINHEIGHT && tmp_y > 0)
 			mlx_pixel_put(m->mlx, m->win, l.x, tmp_y, color);
 		if (l.x > l.x_max)
 			l.x--;
@@ -64,7 +64,7 @@ void	ft_draw_y(t_mlx *m, t_line l, int x, int y)
 			|| (l.y > l.y_max && l.y_max - l.y_min < 0))
 	{
 		tmp_x = ft_coord(l, x, y);
-		if (l.y < WINHEIGHT && tmp_x < WINWIDTH)
+		if (l.y > 0 && l.y < WINHEIGHT && tmp_x < WINWIDTH && tmp_x > 0)
 		mlx_pixel_put(m->mlx, m->win, tmp_x, l.y, color);
 		if (l.y < l.y_max)
 			l.y++;

@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 17:58:58 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/09 18:28:59 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ void	ft_add_coordinates(t_mlx *m)
 			m->coordinates[i][j][1] = (float)((i - m->depth / 2.0)) /\
 									(float)m->depth;
 			m->coordinates[i][j][2] = -(float)(ft_atoi(m->stock[i][j])) / \
-						(float)(m->height) / (float)m->height;
+						(float)(2 * m->height) / (float)m->height;
 			j++;
 		}
 		i++;
