@@ -16,6 +16,30 @@
 #include <fcntl.h>
 #include <fdf.h>
 
+void	free_stock(char ***stock)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (stock[i] != NULL)
+	{
+		while (stock[i][j] != NULL)
+		{
+			free(stock[i][j]);
+			stock[i][j] = NULL;
+			j++;
+		}
+		free(stock[i]);
+		stock[i] = NULL;
+		j = 0;
+		i++;
+	}
+	free(stock);
+	stock = NULL;
+}
+
 char	***ft_parser(char **parse, t_mlx *m)
 {
 	int		i;
@@ -50,8 +74,11 @@ int		count_line(int argc, char **argv, int fd)
 	while (get_next_line(fd, &line) > 0)
 	{
 		free(line);
+		line = NULL;
 		count_line++;
 	}
+	if (line != NULL)
+		free(line);
 	close(fd);
 	return (count_line);
 }
@@ -64,33 +91,45 @@ void	fill_coordinates(char **parse)
 	stock = ft_parser(parse, &m);
 	free(parse);
 	display(stock, m);
-	free(stock);
+	free_stock(stock);
 }
 
-int		main(int argc, char **argv)
+char 	**fill_parse(int argc, char **argv)
 {
-	int		fd;
 	char	*line;
 	char	**parse;
+	int		fd;
 	int		i;
 
-	i = 0;
 	line = NULL;
 	fd = 0;
 	i = count_line(argc, argv, fd);
 	parse = malloc(sizeof(char **) * i + 1);
-	if ((fd = ft_error(argc, argv, fd)) == 0 || i == -1)
-		return (0);
+	if ((fd = ft_error(argc, argv, fd)) == 0 || i <= 0)
+		return (NULL);
 	i = 0;
 	while (get_next_line(fd, &line) > 0)
 	{
 		parse[i] = malloc(sizeof(char *) * ft_strlen(line) + 1);
 		parse[i] = ft_strcpy(parse[i], line);
 		free(line);
+		line = NULL;
 		i++;
 	}
+	if (line != NULL)
+		free(line);
 	parse[i] = NULL;
 	close(fd);
+	return (parse);
+}
+
+int		main(int argc, char **argv)
+{
+	char	**parse;
+
+	parse = fill_parse(argc, argv);
+	if (parse == NULL)
+		return (0);
 	fill_coordinates(parse);
 	return (0);
 }

@@ -98,14 +98,14 @@ void	create_matrix(t_mlx *m)
 
 int		check_value(t_mlx* m)
 {
-	if (m->x2 > 0 && m->x2 < WINWIDTH)
+	if (m->x2 >= 0 && m->x2 <= WINWIDTH + 10)
 	{
-		if (m->y2 > 0 && m->y2 < WINHEIGHT)
+		if (m->y2 >= 0 && m->y2 <= WINHEIGHT + 10)
 			return (1);
 	}
-	else if (m->x1 > 0 && m->x1 < WINWIDTH)
+	else if (m->x1 >= 0 && m->x1 <= WINWIDTH + 10)
 	{
-		if (m->y1 > 0 && m->y1 < WINHEIGHT)
+		if (m->y1 >= 0 && m->y1 <= WINHEIGHT + 10)
 			return (1);
 	}
 	return (0);
