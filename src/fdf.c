@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 17:31:01 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/09 17:58:58 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@ int		expose_hook(t_mlx *m)
 		while (j < m->line_count[i])
 		{
 			m->x1 = ((coordinates[i][j][0] / (coordinates[i][j][2] + Z)) *\
-					m->width + m->width / 2) * SCALE;
+					m->width) * SCALE + WINWIDTH / 2;
 			m->y1 = ((coordinates[i][j][1] / (coordinates[i][j][2] + Z)) *\
-					m->depth + m->depth / 2) * SCALE;
+					m->depth) * SCALE + WINHEIGHT / 2;
 			ft_draw_wire(m, coordinates, i, j);
 			j++;
 		}

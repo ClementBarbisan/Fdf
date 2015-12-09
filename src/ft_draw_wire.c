@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 17:34:29 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/09 17:59:27 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,17 +101,17 @@ void	ft_draw_wire(t_mlx *m, float ***coordinates, int i, int j)
 	if (j > 0)
 	{
 		m->x2 = ((coordinates[i][j - 1][0] / (coordinates[i][j - 1][2] + Z)) *\
-				m->width + m->width / 2) * SCALE;
+				m->width) * SCALE + WINWIDTH / 2;
 		m->y2 = ((coordinates[i][j - 1][1] / (coordinates[i][j - 1][2] + Z)) *\
-				m->depth + m->depth / 2) * SCALE;
+				m->depth) * SCALE + WINHEIGHT / 2;
 		ft_draw_line(m);
 	}
 	if (i + 1 < m->depth && j < m->line_count[i + 1])
 	{
 		m->x2 = ((coordinates[i + 1][j][0] / (coordinates[i + 1][j][2] + Z)) *\
-				m->width + m->width / 2) * SCALE;
+				m->width) * SCALE + WINWIDTH / 2;
 		m->y2 = ((coordinates[i + 1][j][1] / (coordinates[i + 1][j][2] + Z)) *\
-				m->depth + m->depth / 2) * SCALE;
+				m->depth) * SCALE + WINHEIGHT / 2;
 		ft_draw_line(m);
 	}
 }
