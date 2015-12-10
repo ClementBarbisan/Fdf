@@ -192,7 +192,7 @@ void	ft_add_coordinates(t_mlx *m)
 			m->coordinates[i][j][1] = (float)((i - m->depth / 2.0)) /\
 									(float)m->depth;
 			m->coordinates[i][j][2] = -(float)(ft_atoi(m->stock[i][j])) / \
-						(float)(2 * m->height) / (float)m->height;
+						(float)(100.0);
 			j++;
 		}
 		i++;

@@ -40,3 +40,5 @@ fclean: clean
 	/bin/rm -f ./libft/libft.a
 
 re: fclean all
+
+.PHONY: all, $(NAME), compile, ./obj/%.o, clean, fclean, re

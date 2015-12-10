@@ -40,8 +40,9 @@ void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
 
 	tmp_y = 0;
 	color = 0xFFFFFF;
-	while ((l.x < l.x_max && l.x_max - l.x_min > 0)
+	while (((l.x < l.x_max && l.x_max - l.x_min > 0)
 			|| (l.x > l.x_max && l.x_max - l.x_min < 0))
+			&& l.x >= -20 && l.x <= WINWIDTH + 20)
 	{
 		tmp_y = ft_coord(l, x, y);
 		if (l.x > 0 && l.x < WINWIDTH && tmp_y < WINHEIGHT && tmp_y > 0)
@@ -60,12 +61,13 @@ void	ft_draw_y(t_mlx *m, t_line l, int x, int y)
 
 	tmp_x = 0;
 	color = 0xFFFFFF;
-	while ((l.y < l.y_max && l.y_max - l.y_min > 0)
+	while (((l.y < l.y_max && l.y_max - l.y_min > 0)
 			|| (l.y > l.y_max && l.y_max - l.y_min < 0))
+			&& l.y >= -20 && l.y <= WINHEIGHT + 20)
 	{
 		tmp_x = ft_coord(l, x, y);
 		if (l.y > 0 && l.y < WINHEIGHT && tmp_x < WINWIDTH && tmp_x > 0)
-		mlx_pixel_put(m->mlx, m->win, tmp_x, l.y, color);
+			mlx_pixel_put(m->mlx, m->win, tmp_x, l.y, color);
 		if (l.y < l.y_max)
 			l.y++;
 		else
