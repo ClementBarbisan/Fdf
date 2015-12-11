@@ -91,7 +91,6 @@ void	fill_coordinates(char **parse)
 	stock = ft_parser(parse, &m);
 	free(parse);
 	display(stock, m);
-	free_stock(stock);
 }
 
 char 	**fill_parse(int argc, char **argv)

@@ -15,6 +15,20 @@
 #include <fdf.h>
 #include <libft.h>
 
+void		ft_pixel_put(t_img *img, int x, int y, int color)
+{
+	int		pos;
+
+	pos = 0;
+	if (x < WINWIDTH && x > 0 && y < WINHEIGHT && y > 0)
+	{
+		pos = y * img->size + 4 * x;
+		img->data[pos] = (color >> 4) % 256;
+		img->data[pos + 1] = (color >> 8) % 256;
+		img->data[pos + 2] = color >> 16;
+	}
+}
+
 int		ft_coord(t_line l, int x, int y)
 {
 	int	pixel;
@@ -39,14 +53,14 @@ void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
 	int		tmp_y;
 
 	tmp_y = 0;
-	color = 0xFFFFFF;
+	color = 0xFFFFFFFF;
 	while (((l.x < l.x_max && l.x_max - l.x_min > 0)
 			|| (l.x > l.x_max && l.x_max - l.x_min < 0))
 			&& l.x >= -20 && l.x <= WINWIDTH + 20)
 	{
 		tmp_y = ft_coord(l, x, y);
 		if (l.x > 0 && l.x < WINWIDTH && tmp_y < WINHEIGHT && tmp_y > 0)
-			mlx_pixel_put(m->mlx, m->win, l.x, tmp_y, color);
+			ft_pixel_put(&m->img_struct, l.x, tmp_y, color);
 		if (l.x > l.x_max)
 			l.x--;
 		else
@@ -67,7 +81,7 @@ void	ft_draw_y(t_mlx *m, t_line l, int x, int y)
 	{
 		tmp_x = ft_coord(l, x, y);
 		if (l.y > 0 && l.y < WINHEIGHT && tmp_x < WINWIDTH && tmp_x > 0)
-			mlx_pixel_put(m->mlx, m->win, tmp_x, l.y, color);
+			ft_pixel_put(&m->img_struct, tmp_x, l.y, color);
 		if (l.y < l.y_max)
 			l.y++;
 		else

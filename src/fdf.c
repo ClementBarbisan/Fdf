@@ -16,6 +16,17 @@
 #include <fdf.h>
 #include <libft.h>
 
+t_img		ft_img_init(t_mlx *m)
+{
+	t_img	img;
+	char	*tmp;
+
+	tmp = malloc(sizeof(char *));
+	tmp = mlx_get_data_addr(m->img, &img.bpp, &img.size, &img.endian);
+	img.data = tmp;
+	return (img);
+}
+
 void	free_coordinates(float*** coordinates, t_mlx *m)
 {
 	int	i;
@@ -71,7 +82,9 @@ int		expose_hook(t_mlx *m)
 	j = 0;
 	update_matrix(m);
 	coordinates = copy_coordinates(m);
-	mlx_clear_window(m->mlx, m->win);
+	mlx_destroy_image(m->mlx, m->img);
+	m->img = mlx_new_image(m->mlx, WINWIDTH, WINHEIGHT);
+	m->img_struct = ft_img_init(m);
 	while (i < m->depth)
 	{
 		while (j < m->line_count[i])
@@ -87,6 +100,7 @@ int		expose_hook(t_mlx *m)
 		j = 0;
 	}
 	free_coordinates(coordinates, m);
+	mlx_put_image_to_window(m->mlx, m->win, m->img, 0, 0);
 	return (0);
 }
 
@@ -102,13 +116,13 @@ double	compute_rotation(double radius)
 void	change_position(int keycode, t_mlx *m)
 {
 	if (keycode == 123)
-		m->pos_x -= 0.1;
+		m->pos_x -= 0.05;
 	else if (keycode == 124)
-		m->pos_x += 0.1;
+		m->pos_x += 0.05;
 	else if (keycode == 125)
-		m->pos_y += 0.1;
+		m->pos_y += 0.05;
 	else if (keycode == 126)
-		m->pos_y -= 0.1;
+		m->pos_y -= 0.05;
 }
 
 void	change_rotation(int keycode, t_mlx *m)
@@ -126,7 +140,12 @@ void	change_rotation(int keycode, t_mlx *m)
 int		key_hook(int keycode, t_mlx *m)
 {
 	if (keycode == 53)
+	{
+		mlx_destroy_image(m->mlx, m->img);
+		mlx_destroy_window(m->mlx, m->win);
+		free_stock(m->stock);
 		exit(0);
+	}
 	else if (keycode >= 123 && keycode <= 126)
 		change_position(keycode, m);
 	else if (keycode == 69)
@@ -208,6 +227,7 @@ int		display(char ***stock, t_mlx m)
 	create_matrix(&m);
 	m.mlx = mlx_init();
 	m.win = mlx_new_window(m.mlx, WINWIDTH, WINHEIGHT, "Fdf");
+	m.img = mlx_new_image(m.mlx, WINWIDTH, WINHEIGHT);
 	mlx_key_hook(m.win, key_hook, &m);
 	mlx_do_key_autorepeaton(&m);
 	mlx_expose_hook(m.win, expose_hook, &m);

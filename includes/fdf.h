@@ -19,10 +19,20 @@
 # define Z 3
 # define PI 3.14159265358979323846
 
+typedef struct 	s_img
+{
+	char		*data;
+	int 		bpp;
+	int 		size;
+	int 		endian;
+}				t_img;
+
 typedef struct	s_mlx
 {
 	void		*mlx;
 	void		*win;
+	void		*img;
+	t_img		img_struct;
 	float		***coordinates;
 	int*		line_count;
 	double*		matrix;
@@ -66,6 +76,7 @@ typedef struct	s_line
 	int			y;
 }				t_line;
 
+void			free_stock(char ***stock);
 float*			update_coordinates(float* coordinates, double* matrix, \
 		double zoom);
 void			ft_draw_wire(t_mlx *m, float*** coordinates, int i, int j);
