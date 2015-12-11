@@ -12,7 +12,6 @@
 
 #include <mlx.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
 #include <fdf.h>
 #include <libft.h>
@@ -96,21 +95,6 @@ void	create_matrix(t_mlx *m)
 	m->matrix[15] = 1;
 }
 
-int		check_value(t_mlx* m)
-{
-	if (m->x2 >= 0 && m->x2 <= WINWIDTH + 20)
-	{
-		if (m->y2 >= 0 && m->y2 <= WINHEIGHT + 20)
-			return (1);
-	}
-	else if (m->x1 >= 0 && m->x1 <= WINWIDTH + 20)
-	{
-		if (m->y1 >= 0 && m->y1 <= WINHEIGHT + 20)
-			return (1);
-	}
-	return (0);
-}
-
 void	ft_draw_wire(t_mlx *m, float ***coordinates, int i, int j)
 {
 	if (j > 0)
@@ -119,8 +103,7 @@ void	ft_draw_wire(t_mlx *m, float ***coordinates, int i, int j)
 				m->width) * SCALE + WINWIDTH / 2;
 		m->y2 = ((coordinates[i][j - 1][1] / (coordinates[i][j - 1][2] + Z)) *\
 				m->depth) * SCALE + WINHEIGHT / 2;
-		if (check_value(m) == 1)
-			ft_draw_line(m);
+		ft_draw_line(m);
 	}
 	if (i + 1 < m->depth && j < m->line_count[i + 1])
 	{
@@ -128,7 +111,6 @@ void	ft_draw_wire(t_mlx *m, float ***coordinates, int i, int j)
 				m->width) * SCALE + WINWIDTH / 2;
 		m->y2 = ((coordinates[i + 1][j][1] / (coordinates[i + 1][j][2] + Z)) *\
 				m->depth) * SCALE + WINHEIGHT / 2;
-		if (check_value(m) == 1)
-			ft_draw_line(m);
+		ft_draw_line(m);
 	}
 }

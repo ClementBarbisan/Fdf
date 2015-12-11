@@ -12,7 +12,6 @@
 
 #include <mlx.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <fdf.h>
 #include <libft.h>
 
@@ -153,15 +152,15 @@ int		key_hook(int keycode, t_mlx *m)
 	}
 	else if (keycode >= 123 && keycode <= 126)
 		change_position(keycode, m);
-	else if (keycode == 69)
+	else if (keycode == 35)
 	{
 		if (m->zoom < 3)
-			m->zoom += 0.1;
+			m->zoom += 0.01;
 	}
-	else if (keycode == 78)
+	else if (keycode == 31)
 	{
 		if (m->zoom > 0.1)
-			m->zoom -= 0.1;
+			m->zoom -= 0.01;
 	}
 	else if (keycode >= 12 && keycode <= 15)
 		change_rotation(keycode, m);
