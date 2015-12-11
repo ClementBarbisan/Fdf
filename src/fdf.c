@@ -72,9 +72,14 @@ float***	copy_coordinates(t_mlx *m)
 	return (coordinates);
 }
 
+void	display_img(t_mlx *m)
+{
+	mlx_put_image_to_window(m->mlx, m->win, m->img, 0, 0);
+	mlx_destroy_image(m->mlx, m->img);
+}
+
 void	update_img(t_mlx *m)
 {
-	mlx_destroy_image(m->mlx, m->img);
 	m->img = mlx_new_image(m->mlx, WINWIDTH, WINHEIGHT);
 	m->img_struct = ft_img_init(m);
 }
@@ -104,7 +109,7 @@ int		expose_hook(t_mlx *m)
 		j = 0;
 	}
 	free_coordinates(coordinates, m);
-	mlx_put_image_to_window(m->mlx, m->win, m->img, 0, 0);
+	display_img(m);
 	return (0);
 }
 
@@ -145,7 +150,6 @@ int		key_hook(int keycode, t_mlx *m)
 {
 	if (keycode == 53)
 	{
-		mlx_destroy_image(m->mlx, m->img);
 		mlx_destroy_window(m->mlx, m->win);
 		free_stock(m->stock);
 		exit(0);
