@@ -57,6 +57,7 @@ float***	copy_coordinates(t_mlx *m)
 	i = 0;
 	j = 0;
 	coordinates = malloc(sizeof(float**) * m->depth);
+	update_matrix(m);
 	while (i < m->depth)
 	{
 		coordinates[i] = malloc(sizeof(float*) * m->line_count[i]);
@@ -72,6 +73,13 @@ float***	copy_coordinates(t_mlx *m)
 	return (coordinates);
 }
 
+void	update_img(t_mlx *m)
+{
+	mlx_destroy_image(m->mlx, m->img);
+	m->img = mlx_new_image(m->mlx, WINWIDTH, WINHEIGHT);
+	m->img_struct = ft_img_init(m);
+}
+
 int		expose_hook(t_mlx *m)
 {
 	int		i;
@@ -80,11 +88,8 @@ int		expose_hook(t_mlx *m)
 
 	i = 0;
 	j = 0;
-	update_matrix(m);
 	coordinates = copy_coordinates(m);
-	mlx_destroy_image(m->mlx, m->img);
-	m->img = mlx_new_image(m->mlx, WINWIDTH, WINHEIGHT);
-	m->img_struct = ft_img_init(m);
+	update_img(m);
 	while (i < m->depth)
 	{
 		while (j < m->line_count[i])
@@ -210,7 +215,7 @@ void	ft_add_coordinates(t_mlx *m)
 									(float)m->width;
 			m->coordinates[i][j][1] = (float)((i - m->depth / 2.0)) /\
 									(float)m->depth;
-			m->coordinates[i][j][2] = -(float)(ft_atoi(m->stock[i][j])) / \
+			m->coordinates[i][j][2] = -(float)(ft_atoi(m->stock[i][j])) /\
 						(float)(100.0);
 			j++;
 		}
@@ -228,8 +233,7 @@ int		display(char ***stock, t_mlx m)
 	m.mlx = mlx_init();
 	m.win = mlx_new_window(m.mlx, WINWIDTH, WINHEIGHT, "Fdf");
 	m.img = mlx_new_image(m.mlx, WINWIDTH, WINHEIGHT);
-	mlx_key_hook(m.win, key_hook, &m);
-	mlx_do_key_autorepeaton(&m);
+	mlx_hook(m.win, 2, 1, key_hook, &m);
 	mlx_expose_hook(m.win, expose_hook, &m);
 	mlx_loop(m.mlx);
 	return (0);
