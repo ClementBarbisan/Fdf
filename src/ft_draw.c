@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:19:01 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 18:21:52 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/14 17:48:31 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,47 +43,77 @@ int		ft_coord(t_line l, int x, int y)
 	return (pixel);
 }
 
+int		set_color(t_line t)
+{
+	int	color;
+
+	color = ((t.height1 + 2) * 100) << 16;
+	color += ((t.height1 + 2) * 155) << 8;
+	color += (t.height1 + 2) * 200;
+	return (color);
+}
+
+void	add_color(int p1, int p2, t_line *l, int add)
+{
+	int		r;
+	int		g;
+	int		b;
+	int		incr;
+
+	incr = ((float)((l->height2 - l->height1) * 10) / (float)(p1 - p2)) * l->increment;
+	r = (l->color >> 16) & 0xFF;
+	g = (l->color >> 8) & 0xFF;
+	b = l->color & 0xFF;
+	if (incr > 0)
+	{
+		l->color = (r + incr) << 16;
+		l->color += (g + incr) << 8;
+		l->color += (b + incr);
+		l->increment = add;
+	}
+	else
+		l->increment += add;
+}
+
 void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
 {
-	int		color;
 	int		tmp_y;
 
 	tmp_y = 0;
-	color = 0xFFFFFF;
 	while (((l.x < l.x_max && l.x_max - l.x_min > 0)
 			|| (l.x > l.x_max && l.x_max - l.x_min < 0)))
 	{
 		tmp_y = ft_coord(l, x, y);
 		if (l.x > 0 && l.x < WINWIDTH && tmp_y < WINHEIGHT && tmp_y > 0)
-			ft_pixel_put(&m->img_struct, l.x, tmp_y, color);
+			ft_pixel_put(&m->img_struct, l.x, tmp_y, l.color);
 		if (l.x > l.x_max)
 			l.x--;
 		else
 			l.x++;
+		/*add_color(l.x_max, l.x_min, &l, 10);*/
 	}
 }
 
 void	ft_draw_y(t_mlx *m, t_line l, int x, int y)
 {
-	int		color;
 	int		tmp_x;
 
 	tmp_x = 0;
-	color = 0xFFFFFF;
 	while (((l.y < l.y_max && l.y_max - l.y_min > 0)
 			|| (l.y > l.y_max && l.y_max - l.y_min < 0)))
 	{
 		tmp_x = ft_coord(l, x, y);
 		if (l.y > 0 && l.y < WINHEIGHT && tmp_x < WINWIDTH && tmp_x > 0)
-			ft_pixel_put(&m->img_struct, tmp_x, l.y, color);
+			ft_pixel_put(&m->img_struct, tmp_x, l.y, l.color);
 		if (l.y < l.y_max)
 			l.y++;
 		else
 			l.y--;
+		/*add_color(l.y_max, l.y_min, &l, 10);*/
 	}
 }
 
-void	ft_draw_line(t_mlx *m)
+void	ft_draw_line(t_mlx *m, int height1, int height2)
 {
 	t_line	l;
 	int		x;
@@ -91,22 +121,26 @@ void	ft_draw_line(t_mlx *m)
 
 	y = (m->y1 - m->y2) * (m->y1 - m->y2);
 	x = (m->x1 - m->x2) * (m->x1 - m->x2);
-	l = ft_draw_init(m);
+	l = ft_draw_init(m, height1, height2);
 	if (y < x)
 		ft_draw_x(m, l, x, y);
 	else
 		ft_draw_y(m, l, x, y);
 }
 
-t_line	ft_draw_init(t_mlx *m)
+t_line	ft_draw_init(t_mlx *m, int height1, int height2)
 {
 	t_line l;
 
+	l.height1 = height1;
+	l.height2 = height2;
 	l.x_max = m->x1;
 	l.x_min = m->x2;
 	l.x = m->x2;
 	l.y_max = m->y1;
 	l.y_min = m->y2;
 	l.y = m->y2;
+	l.increment = 10;
+	l.color = set_color(l);
 	return (l);
 }

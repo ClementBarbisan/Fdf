@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 17:29:39 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/14 17:06:15 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct 	s_img
 
 typedef struct	s_mlx
 {
+	int			face_on;
 	void		*mlx;
 	void		*win;
 	void		*img;
@@ -72,6 +73,10 @@ typedef struct	s_line
 	int			x_min;
 	int			y_max;
 	int			y_min;
+	int			height1;
+	int			height2;
+	int			color;
+	int			increment;
 	int			x;
 	int			y;
 }				t_line;
@@ -80,10 +85,11 @@ void			free_stock(char ***stock);
 float*			update_coordinates(float* coordinates, double* matrix, \
 		double zoom);
 void			ft_draw_wire(t_mlx *m, float*** coordinates, int i, int j);
+void			ft_draw_square(t_mlx *m, float*** coordinates, int i, int j);
 int				display(char ***stock, t_mlx m);
-void			ft_draw_line(t_mlx *m);
+void			ft_draw_line(t_mlx *m, int height1, int height2);
 int				ft_error(int argc, char **argv, int fd);
-t_line			ft_draw_init(t_mlx *m);
+t_line			ft_draw_init(t_mlx *m, int height1, int height2);
 void			update_matrix(t_mlx *m);
 void			create_matrix(t_mlx *m);
 

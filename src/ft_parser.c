@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 17:06:19 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/14 14:17:16 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,12 @@ int		count_line(int argc, char **argv, int fd)
 	return (count_line);
 }
 
-void	fill_coordinates(char **parse)
+void	fill_coordinates(char **parse, int face_on)
 {
 	char	***stock;
 	t_mlx	m;
 
+	m.face_on = face_on;
 	stock = ft_parser(parse, &m);
 	free(parse);
 	display(stock, m);
@@ -104,7 +105,7 @@ char 	**fill_parse(int argc, char **argv)
 	fd = 0;
 	i = count_line(argc, argv, fd);
 	parse = malloc(sizeof(char **) * i + 1);
-	if ((fd = ft_error(argc, argv, fd)) == 0 || i <= 0)
+	if (i <= 0 || (fd = ft_error(argc, argv, fd)) == 0)
 		return (NULL);
 	i = 0;
 	while (get_next_line(fd, &line) > 0)
@@ -125,11 +126,20 @@ char 	**fill_parse(int argc, char **argv)
 int		main(int argc, char **argv)
 {
 	char	**parse;
+	int		face_on;
 
+	face_on = 0;
+	if (argc >= 3 && ft_strcmp(argv[2], "-face") == 0)
+		face_on = 1;
+	else if (argc >= 3)
+	{
+		ft_putendl("Wrong options.");
+		return (0);
+	}
 	parse = fill_parse(argc, argv);
 	if (parse == NULL)
 		return (0);
-	fill_coordinates(parse);
+	fill_coordinates(parse, face_on);
 	return (0);
 }
 

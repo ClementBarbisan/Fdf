@@ -6,12 +6,13 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/09 18:28:59 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/14 17:06:57 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mlx.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <fdf.h>
 #include <libft.h>
 
@@ -98,11 +99,10 @@ int		expose_hook(t_mlx *m)
 	{
 		while (j < m->line_count[i])
 		{
-			m->x1 = ((coordinates[i][j][0] / (coordinates[i][j][2] + Z)) *\
-					m->width) * SCALE + WINWIDTH / 2;
-			m->y1 = ((coordinates[i][j][1] / (coordinates[i][j][2] + Z)) *\
-					m->depth) * SCALE + WINHEIGHT / 2;
-			ft_draw_wire(m, coordinates, i, j);
+			if (m->face_on == 1)
+				ft_draw_square(m, coordinates, i, j);
+			else
+				ft_draw_wire(m, coordinates, i, j);
 			j++;
 		}
 		i++;
@@ -219,7 +219,7 @@ void	ft_add_coordinates(t_mlx *m)
 			m->coordinates[i][j][1] = (float)((i - m->depth / 2.0)) /\
 									(float)m->depth;
 			m->coordinates[i][j][2] = -(float)(ft_atoi(m->stock[i][j])) /\
-						(float)(100.0);
+						(float)(20.0 * ((m->height + 1) / 2));
 			j++;
 		}
 		i++;
