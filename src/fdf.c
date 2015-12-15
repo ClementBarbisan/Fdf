@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/14 17:06:57 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/15 13:52:14 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <fdf.h>
 #include <libft.h>
 
-t_img		ft_img_init(t_mlx *m)
+t_img	ft_img_init(t_mlx *m)
 {
 	t_img	img;
 	char	*tmp;
@@ -27,7 +27,7 @@ t_img		ft_img_init(t_mlx *m)
 	return (img);
 }
 
-void	free_coordinates(float*** coordinates, t_mlx *m)
+void	free_coordinates(float ***coordinates, t_mlx *m)
 {
 	int	i;
 	int	j;
@@ -48,11 +48,11 @@ void	free_coordinates(float*** coordinates, t_mlx *m)
 	free(coordinates);
 }
 
-float***	copy_coordinates(t_mlx *m)
+float	***copy_coordinates(t_mlx *m)
 {
-	float***	coordinates;
-	int			i;
-	int			j;
+	float	***coordinates;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
@@ -63,7 +63,8 @@ float***	copy_coordinates(t_mlx *m)
 		coordinates[i] = malloc(sizeof(float*) * m->line_count[i]);
 		while (j < m->line_count[i])
 		{
-			coordinates[i][j] = update_coordinates(m->coordinates[i][j], m->matrix, m->zoom);
+			coordinates[i][j] = update_coordinates(m->coordinates[i][j], \
+					m->matrix, m->zoom);
 			j++;
 		}
 		i++;
@@ -151,7 +152,6 @@ int		key_hook(int keycode, t_mlx *m)
 	if (keycode == 53)
 	{
 		mlx_destroy_window(m->mlx, m->win);
-		free_stock(m->stock);
 		exit(0);
 	}
 	else if (keycode >= 123 && keycode <= 126)
@@ -172,7 +172,7 @@ int		key_hook(int keycode, t_mlx *m)
 	return (0);
 }
 
-void	ft_area(t_mlx *m)
+void	ft_area(t_mlx *m, char ***stock)
 {
 	int		i;
 	int		j;
@@ -182,14 +182,14 @@ void	ft_area(t_mlx *m)
 	m->height = 1;
 	m->width = 0;
 	m->line_count = malloc(sizeof(int) * m->depth);
-	while (m->stock[i] != NULL)
+	while (stock[i] != NULL)
 	{
-		while (m->stock[i][j] != NULL)
+		while (stock[i][j] != NULL)
 		{
-			if (-ft_atoi(m->stock[i][j]) > m->height )
-				m->height = -ft_atoi(m->stock[i][j]);
-			else if (ft_atoi(m->stock[i][j]) > m->height)
-				m->height = ft_atoi(m->stock[i][j]);
+			if (-ft_atoi(stock[i][j]) > m->height)
+				m->height = -ft_atoi(stock[i][j]);
+			else if (ft_atoi(stock[i][j]) > m->height)
+				m->height = ft_atoi(stock[i][j]);
 			if (j > m->width)
 				m->width = j;
 			j++;
@@ -200,7 +200,7 @@ void	ft_area(t_mlx *m)
 	}
 }
 
-void	ft_add_coordinates(t_mlx *m)
+void	ft_add_coordinates(t_mlx *m, char ***stock)
 {
 	int		i;
 	int		j;
@@ -208,17 +208,17 @@ void	ft_add_coordinates(t_mlx *m)
 	i = 0;
 	j = 0;
 	m->coordinates = malloc(sizeof(float **) * m->depth);
-	while (m->stock[i] != NULL)
+	while (stock[i] != NULL)
 	{
 		m->coordinates[i] = malloc(sizeof(float *) * m->line_count[i]);
-		while (m->stock[i][j] != NULL)
+		while (stock[i][j] != NULL)
 		{
 			m->coordinates[i][j] = malloc(sizeof(float) * 3);
 			m->coordinates[i][j][0] = (float)((j - m->width / 2.0)) /\
 									(float)m->width;
 			m->coordinates[i][j][1] = (float)((i - m->depth / 2.0)) /\
 									(float)m->depth;
-			m->coordinates[i][j][2] = -(float)(ft_atoi(m->stock[i][j])) /\
+			m->coordinates[i][j][2] = -(float)(ft_atoi(stock[i][j])) /\
 						(float)(20.0 * ((m->height + 1) / 2));
 			j++;
 		}
@@ -229,9 +229,9 @@ void	ft_add_coordinates(t_mlx *m)
 
 int		display(char ***stock, t_mlx m)
 {
-	m.stock = stock;
-	ft_area(&m);
-	ft_add_coordinates(&m);
+	ft_area(&m, stock);
+	ft_add_coordinates(&m, stock);
+	free_stock(stock);
 	create_matrix(&m);
 	m.mlx = mlx_init();
 	m.win = mlx_new_window(m.mlx, WINWIDTH, WINHEIGHT, "Fdf");

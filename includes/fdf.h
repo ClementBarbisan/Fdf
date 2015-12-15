@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/14 17:06:15 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/15 11:33:33 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,18 @@
 # define Z 3
 # define PI 3.14159265358979323846
 
-typedef struct 	s_img
+typedef struct	s_parse t_parse;
+
+struct			s_parse
+{
+	int			number;
+	char		*line;
+	t_parse		*next;
+	t_parse		*begin;
+};
+
+
+typedef struct	s_img
 {
 	char		*data;
 	int 		bpp;
@@ -52,7 +63,6 @@ typedef struct	s_mlx
 	int			height;
 	int			width;
 	int			depth;
-	char		***stock;
 }				t_mlx;
 
 typedef struct	s_trigo

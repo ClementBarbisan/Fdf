@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/14 14:17:16 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/15 11:40:43 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,34 @@ void	free_stock(char ***stock)
 	stock = NULL;
 }
 
-char	***ft_parser(char **parse, t_mlx *m)
+void	free_parse(t_parse *parse)
+{
+	t_parse	*old_node;
+
+	parse = parse->begin;
+	while (parse != NULL)
+	{
+		old_node = parse;
+		free(old_node->line);
+		free(old_node);
+		parse = parse->next;
+	}
+}
+
+char	***ft_parser(t_parse *parse, t_mlx *m)
 {
 	int		i;
+	int		count;
 	char	***stock;
 
 	i = 0;
-	while (parse[i] != NULL)
-		i++;
-	stock = malloc(sizeof(char ***) * i + 1);
-	i = 0;
-	while (parse[i] != NULL)
+	count = parse->number;
+	stock = malloc(sizeof(char **) * (parse->number + 1));
+	parse = parse->begin;
+	while (parse != NULL && i < count)
 	{
-		stock[i] = malloc(sizeof(char **) * ft_strlen(parse[i]) + 1);
-		stock[i] = ft_strsplit(parse[i], ' ');
-		free(parse[i]);
+		stock[i] = ft_strsplit(parse->line, ' ');
+		parse = parse->next;
 		i++;
 	}
 	stock[i] = NULL;
@@ -62,70 +75,63 @@ char	***ft_parser(char **parse, t_mlx *m)
 	return (stock);
 }
 
-int		count_line(int argc, char **argv, int fd)
-{
-	char	*line;
-	int		count_line;
-
-	count_line = 0;
-	fd = ft_error(argc, argv, fd);
-	if (fd == 0)
-		return (-1);
-	while (get_next_line(fd, &line) > 0)
-	{
-		free(line);
-		line = NULL;
-		count_line++;
-	}
-	if (line != NULL)
-		free(line);
-	close(fd);
-	return (count_line);
-}
-
-void	fill_coordinates(char **parse, int face_on)
+void	fill_coordinates(t_parse *parse, int face_on)
 {
 	char	***stock;
 	t_mlx	m;
 
 	m.face_on = face_on;
 	stock = ft_parser(parse, &m);
-	free(parse);
+	free_parse(parse);
 	display(stock, m);
 }
 
-char 	**fill_parse(int argc, char **argv)
+t_parse	*add_node(t_parse *old_node, char *line)
+{
+	t_parse	*node;
+
+	node = malloc(sizeof(t_parse));
+	node->line = malloc(sizeof(char) * ft_strlen(line) + 1);
+	node->line = ft_strcpy(node->line, line);
+	node->next = NULL;
+	if (old_node == NULL)
+	{
+		node->begin = node;
+		node->number = 1;
+	}
+	else
+	{
+		old_node->next = node;
+		node->begin = old_node->begin;
+		node->number = ++old_node->number;
+	}
+	free(line);
+	line = NULL;
+	return (node);
+}
+
+t_parse	*fill_parse(int argc, char **argv)
 {
 	char	*line;
-	char	**parse;
+	t_parse	*parse;
 	int		fd;
-	int		i;
 
 	line = NULL;
 	fd = 0;
-	i = count_line(argc, argv, fd);
-	parse = malloc(sizeof(char **) * i + 1);
-	if (i <= 0 || (fd = ft_error(argc, argv, fd)) == 0)
+	parse = NULL;
+	if ((fd = ft_error(argc, argv, fd)) == 0)
 		return (NULL);
-	i = 0;
 	while (get_next_line(fd, &line) > 0)
-	{
-		parse[i] = malloc(sizeof(char *) * ft_strlen(line) + 1);
-		parse[i] = ft_strcpy(parse[i], line);
-		free(line);
-		line = NULL;
-		i++;
-	}
+		parse = add_node(parse, line);
 	if (line != NULL)
 		free(line);
-	parse[i] = NULL;
 	close(fd);
 	return (parse);
 }
 
 int		main(int argc, char **argv)
 {
-	char	**parse;
+	t_parse	*parse;
 	int		face_on;
 
 	face_on = 0;
