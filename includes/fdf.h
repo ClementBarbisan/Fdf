@@ -15,7 +15,7 @@
 
 # define WINWIDTH 800
 # define WINHEIGHT 600
-# define SCALE 80
+# define SCALE 180
 # define Z 3
 # define PI 3.14159265358979323846
 
@@ -40,6 +40,7 @@ typedef struct	s_img
 
 typedef struct	s_mlx
 {
+	int			scale;
 	int			face_on;
 	void		*mlx;
 	void		*win;

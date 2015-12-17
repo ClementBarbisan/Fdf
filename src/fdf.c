@@ -230,6 +230,7 @@ void	ft_add_coordinates(t_mlx *m, char ***stock)
 int		display(char ***stock, t_mlx m)
 {
 	ft_area(&m, stock);
+	m.scale = SCALE / (m.width / 8);
 	ft_add_coordinates(&m, stock);
 	free_stock(stock);
 	create_matrix(&m);
