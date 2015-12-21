@@ -158,7 +158,7 @@ int		key_hook(int keycode, t_mlx *m)
 		change_position(keycode, m);
 	else if (keycode == 35)
 	{
-		if (m->zoom < 3)
+		if (m->zoom < 4)
 			m->zoom += 0.01;
 	}
 	else if (keycode == 31)

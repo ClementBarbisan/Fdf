@@ -65,7 +65,7 @@ void	add_color(int p1, int p2, t_line *l)
 	/*r = (l->color >> 16) & 0xFF;*/
 	/*g = (l->color >> 8) & 0xFF;*/
 	/*b = l->color & 0xFF;*/
-	l->color += (set_color(l->height2) - set_color(l->height1)) / (p2 - p1) * l->increment;
+	l->color += ((set_color(l->height2) - set_color(l->height1)) / (p2 - p1)) * l->increment;
 	/*if (incr > 0)*/
 	/*{*/
 		/*l->color = (r + incr) << 16;*/
