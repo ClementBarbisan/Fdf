@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:19:01 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/14 17:48:31 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/21 18:26:29 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,36 +43,38 @@ int		ft_coord(t_line l, int x, int y)
 	return (pixel);
 }
 
-int		set_color(t_line t)
+int		set_color(int height)
 {
 	int	color;
 
-	color = ((t.height1 + 2) * 100) << 16;
-	color += ((t.height1 + 2) * 155) << 8;
-	color += (t.height1 + 2) * 200;
+	/*color = ((t.height1 + 2) * 100) << 16;*/
+	/*color += ((t.height1 + 2) * 155) << 8;*/
+	/*color += (t.height1 + 2) * 200;*/
+	color = 16777215 - (height * 42373567 % 16777215);
 	return (color);
 }
 
-void	add_color(int p1, int p2, t_line *l, int add)
+void	add_color(int p1, int p2, t_line *l)
 {
-	int		r;
-	int		g;
-	int		b;
-	int		incr;
+	/*int		r;*/
+	/*int		g;*/
+	/*int		b;*/
+	/*int		incr;*/
 
-	incr = ((float)((l->height2 - l->height1) * 10) / (float)(p1 - p2)) * l->increment;
-	r = (l->color >> 16) & 0xFF;
-	g = (l->color >> 8) & 0xFF;
-	b = l->color & 0xFF;
-	if (incr > 0)
-	{
-		l->color = (r + incr) << 16;
-		l->color += (g + incr) << 8;
-		l->color += (b + incr);
-		l->increment = add;
-	}
-	else
-		l->increment += add;
+	/*incr =;*/
+	/*r = (l->color >> 16) & 0xFF;*/
+	/*g = (l->color >> 8) & 0xFF;*/
+	/*b = l->color & 0xFF;*/
+	l->color += (set_color(l->height2) - set_color(l->height1)) / (p2 - p1) * l->increment;
+	/*if (incr > 0)*/
+	/*{*/
+		/*l->color = (r + incr) << 16;*/
+		/*l->color += (g + incr) << 8;*/
+		/*l->color += (b + incr);*/
+		/*l->increment = add;*/
+	/*}*/
+	/*else*/
+		/*l->increment += add;*/
 }
 
 void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
@@ -90,7 +92,7 @@ void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
 			l.x--;
 		else
 			l.x++;
-		/*add_color(l.x_max, l.x_min, &l, 10);*/
+		add_color(l.x_max, l.x_min, &l);
 	}
 }
 
@@ -109,7 +111,7 @@ void	ft_draw_y(t_mlx *m, t_line l, int x, int y)
 			l.y++;
 		else
 			l.y--;
-		/*add_color(l.y_max, l.y_min, &l, 10);*/
+		add_color(l.y_max, l.y_min, &l);
 	}
 }
 
@@ -140,7 +142,7 @@ t_line	ft_draw_init(t_mlx *m, int height1, int height2)
 	l.y_max = m->y1;
 	l.y_min = m->y2;
 	l.y = m->y2;
-	l.increment = 10;
-	l.color = set_color(l);
+	l.increment = 0.001;
+	l.color = set_color(l.height1);
 	return (l);
 }

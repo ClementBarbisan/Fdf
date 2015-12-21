@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/15 11:33:33 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/21 17:59:13 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ typedef struct	s_line
 	int			height1;
 	int			height2;
 	int			color;
-	int			increment;
+	double		increment;
 	int			x;
 	int			y;
 }				t_line;

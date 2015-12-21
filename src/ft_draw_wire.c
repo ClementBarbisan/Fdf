@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/14 17:56:20 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/21 17:47:50 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,28 +144,28 @@ void	ft_draw_square(t_mlx *m, float ***coordinates, int i, int j)
 	tmp_z = 0;
 	if (i + 1 < m->depth && j + 1 < m->line_count[i] && j + 1 < m->line_count[i + 1])
 	{
-		while (k < m->scale)
+		while (k < m->scale * m->zoom)
 		{
 			height1 = (m->coordinates[i][j][2] + (m->coordinates[i][j + 1][2] - \
 					m->coordinates[i][j][2]))* (20 * (m->height / 2));
 			height2 = (m->coordinates[i + 1][j][2] + (m->coordinates[i + 1][j + 1][2] - \
 					m->coordinates[i + 1][j][2])) * (20 * (m->height / 2));
 			tmp_z = coordinates[i][j][2] + (coordinates[i][j + 1][2] - \
-					coordinates[i][j][2]) / (float)m->scale * ((float)k / (float)(20.0 * ((m->height + 1) / 2)));
+					coordinates[i][j][2]) / (float)m->scale / (float)m->zoom * ((float)k / (float)(20.0 * ((m->height + 1) / 2)));
 			tmp_1 = set_coordinate(m, coordinates[i][j][0], coordinates[i][j][2], 1);
 			tmp_2 = set_coordinate(m, coordinates[i][j + 1][0], coordinates[i][j + 1][2], 1);
-			m->x1 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale) * k;
+			m->x1 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale / (float)m->zoom) * k;
 			tmp_1 = set_coordinate(m, coordinates[i][j][1], coordinates[i][j][2], 0);
 			tmp_2 = set_coordinate(m, coordinates[i][j + 1][1], coordinates[i][j + 1][2], 0);
-			m->y1 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale) * k;
+			m->y1 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale / (float)m->zoom) * k;
 			tmp_z = coordinates[i + 1][j][2] + (coordinates[i + 1][j + 1][2] \
-					- coordinates[i + 1][j][2]) / (float)m->scale * ((float)k / (float)(20.0 * ((m->height + 1) / 2)));
+					- coordinates[i + 1][j][2]) / (float)m->scale / (float)m->zoom * ((float)k / (float)(20.0 * ((m->height + 1) / 2)));
 			tmp_1 = set_coordinate(m, coordinates[i + 1][j][0], coordinates[i + 1][j][2], 1);
 			tmp_2 = set_coordinate(m, coordinates[i + 1][j + 1][0], coordinates[i + 1][j + 1][2], 1);
-			m->x2 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale) * k;
+			m->x2 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale / (float)m->zoom) * k;
 			tmp_1 = set_coordinate(m, coordinates[i + 1][j][1], coordinates[i + 1][j][2], 0);
 			tmp_2 = set_coordinate(m, coordinates[i + 1][j + 1][1], coordinates[i + 1][j + 1][2], 0);
-			m->y2 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale) * k;
+			m->y2 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale / (float)m->zoom) * k;
 			ft_draw_line(m, height1, height2);
 			k++;
 		}
