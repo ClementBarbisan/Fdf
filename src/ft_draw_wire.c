@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/21 17:47:50 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/22 18:26:54 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ void	ft_draw_square(t_mlx *m, float ***coordinates, int i, int j)
 		while (k < m->scale * m->zoom)
 		{
 			height1 = (m->coordinates[i][j][2] + (m->coordinates[i][j + 1][2] - \
-					m->coordinates[i][j][2]))* (20 * (m->height / 2));
+					m->coordinates[i][j][2])) * (20 * (m->height / 2));
 			height2 = (m->coordinates[i + 1][j][2] + (m->coordinates[i + 1][j + 1][2] - \
 					m->coordinates[i + 1][j][2])) * (20 * (m->height / 2));
 			tmp_z = coordinates[i][j][2] + (coordinates[i][j + 1][2] - \

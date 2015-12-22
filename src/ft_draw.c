@@ -6,12 +6,13 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:19:01 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/21 18:26:29 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/22 18:14:21 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mlx.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <fdf.h>
 #include <libft.h>
 
@@ -47,34 +48,20 @@ int		set_color(int height)
 {
 	int	color;
 
-	/*color = ((t.height1 + 2) * 100) << 16;*/
-	/*color += ((t.height1 + 2) * 155) << 8;*/
-	/*color += (t.height1 + 2) * 200;*/
 	color = 16777215 - (height * 42373567 % 16777215);
 	return (color);
 }
 
 void	add_color(int p1, int p2, t_line *l)
 {
-	/*int		r;*/
-	/*int		g;*/
-	/*int		b;*/
-	/*int		incr;*/
-
-	/*incr =;*/
-	/*r = (l->color >> 16) & 0xFF;*/
-	/*g = (l->color >> 8) & 0xFF;*/
-	/*b = l->color & 0xFF;*/
-	l->color += ((set_color(l->height2) - set_color(l->height1)) / (p2 - p1)) * l->increment;
-	/*if (incr > 0)*/
-	/*{*/
-		/*l->color = (r + incr) << 16;*/
-		/*l->color += (g + incr) << 8;*/
-		/*l->color += (b + incr);*/
-		/*l->increment = add;*/
-	/*}*/
-	/*else*/
-		/*l->increment += add;*/
+	if (l->height1 > l->height2 && p1 > p2)
+		l->color += ((float)(set_color(l->height1) - set_color(l->height2)) / (float)(p1 - p2)) * l->increment;
+	else if (l->height1 > l->height2 && p1 <= p2)
+		l->color += ((float)(set_color(l->height1) - set_color(l->height2)) / (float)(p2 - p1)) * l->increment;
+	else if (l->height1 <= l->height2 && p1 > p2)
+		l->color += ((float)(set_color(l->height2) - set_color(l->height1)) / (float)(p1 - p2)) * l->increment;
+	else if (l->height1 <= l->height2 && p1 <= p2)
+		l->color += ((float)(set_color(l->height2) - set_color(l->height1)) / (float)(p2 - p1)) * l->increment;
 }
 
 void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
