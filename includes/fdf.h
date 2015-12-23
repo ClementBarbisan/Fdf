@@ -6,18 +6,32 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/21 17:59:13 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/23 17:34:09 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FDF_H
 # define FDF_H
 
+#include <OpenCL/cl.h>
+#include <libft.h>
+
 # define WINWIDTH 800
 # define WINHEIGHT 600
 # define SCALE 180
 # define Z 3
 # define PI 3.14159265358979323846
+
+typedef struct			s_opencl
+{
+	cl_device_id		*devices;
+	cl_command_queue	*queue;
+	cl_context			context;
+	cl_int				error;
+	cl_kernel			kernel;
+	cl_mem				*arg_kernel;
+	size_t				nb_device;
+}						t_opencl;
 
 typedef struct	s_parse t_parse;
 
@@ -28,7 +42,6 @@ struct			s_parse
 	t_parse		*next;
 	t_parse		*begin;
 };
-
 
 typedef struct	s_img
 {
