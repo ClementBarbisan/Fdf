@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/15 11:40:43 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/25 17:19:58 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,13 @@ char	***ft_parser(t_parse *parse, t_mlx *m)
 	return (stock);
 }
 
-void	fill_coordinates(t_parse *parse, int face_on)
+void	fill_coordinates(t_parse *parse, int face_on, t_opencl *opencl)
 {
 	char	***stock;
 	t_mlx	m;
 
 	m.face_on = face_on;
+	m.opencl = opencl;
 	stock = ft_parser(parse, &m);
 	free_parse(parse);
 	display(stock, m);
@@ -132,9 +133,11 @@ t_parse	*fill_parse(int argc, char **argv)
 int		main(int argc, char **argv)
 {
 	t_parse	*parse;
+	t_opencl	opencl;
 	int		face_on;
 
 	face_on = 0;
+	parse = NULL;
 	if (argc >= 3 && ft_strcmp(argv[2], "-face") == 0)
 		face_on = 1;
 	else if (argc >= 3)
@@ -142,10 +145,19 @@ int		main(int argc, char **argv)
 		ft_putendl("Wrong options.");
 		return (0);
 	}
-	parse = fill_parse(argc, argv);
-	if (parse == NULL)
-		return (0);
-	fill_coordinates(parse, face_on);
+	if (argc > 1)
+	{
+		parse = fill_parse(argc, argv);
+		if (parse == NULL)
+		{
+			ft_putendl("Parsing failed.");
+			return (0);
+		}
+		initialize_opencl(&opencl);
+		fill_coordinates(parse, face_on, &opencl);
+	}
+	else
+		ft_putendl("Not enough arguments.");
 	return (0);
 }
 

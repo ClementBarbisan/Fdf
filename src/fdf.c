@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/15 13:52:14 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/25 17:29:03 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,11 +229,26 @@ void	ft_add_coordinates(t_mlx *m, char ***stock)
 
 int		display(char ***stock, t_mlx m)
 {
+	size_t	i;
+
+	i = 0;
 	ft_area(&m, stock);
 	m.scale = SCALE / (m.width / 8);
 	ft_add_coordinates(&m, stock);
 	free_stock(stock);
 	create_matrix(&m);
+	m.opencl->kernel = malloc(sizeof(cl_kernel) * m.opencl->nb_device);
+	/*while (i < m.opencl->nb_device)*/
+	/*{*/
+		/*m.opencl->kernel[i] = clCreateKernel(m.opencl->program, \*/
+				/*"compute_matrix", &m.opencl->error);*/
+		/*if (m.opencl->error != CL_SUCCESS)*/
+		/*{*/
+			/*ft_putendl("Failed to create kernel.");*/
+			/*return (-1);*/
+		/*}*/
+		/*i++;*/
+	/*}*/
 	m.mlx = mlx_init();
 	m.win = mlx_new_window(m.mlx, WINWIDTH, WINHEIGHT, "Fdf");
 	m.img = mlx_new_image(m.mlx, WINWIDTH, WINHEIGHT);

@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/23 17:34:09 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/25 17:28:25 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,15 @@
 
 #include <OpenCL/cl.h>
 #include <libft.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 # define WINWIDTH 800
 # define WINHEIGHT 600
 # define SCALE 180
 # define Z 3
 # define PI 3.14159265358979323846
-
-typedef struct			s_opencl
-{
-	cl_device_id		*devices;
-	cl_command_queue	*queue;
-	cl_context			context;
-	cl_int				error;
-	cl_kernel			kernel;
-	cl_mem				*arg_kernel;
-	size_t				nb_device;
-}						t_opencl;
 
 typedef struct	s_parse t_parse;
 
@@ -50,6 +42,20 @@ typedef struct	s_img
 	int 		size;
 	int 		endian;
 }				t_img;
+
+typedef struct			s_opencl
+{
+	cl_device_id		*devices;
+	cl_platform_id		platform_id;
+	cl_command_queue	*queue;
+	cl_program			program;
+	cl_context			context;
+	cl_int				error;
+	cl_kernel			*kernel;
+	cl_mem				*arg_kernel;
+	char				*filename;
+	cl_uint				nb_device;
+}						t_opencl;
 
 typedef struct	s_mlx
 {
@@ -77,6 +83,7 @@ typedef struct	s_mlx
 	int			height;
 	int			width;
 	int			depth;
+	t_opencl	*opencl;
 }				t_mlx;
 
 typedef struct	s_trigo
@@ -105,6 +112,7 @@ typedef struct	s_line
 	int			y;
 }				t_line;
 
+void			initialize_opencl(t_opencl *opencl);
 void			free_stock(char ***stock);
 float*			update_coordinates(float* coordinates, double* matrix, \
 		double zoom);
