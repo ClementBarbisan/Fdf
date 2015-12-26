@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/21 17:47:50 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/26 18:11:25 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,20 @@
 #include <fdf.h>
 #include <libft.h>
 
-float	*update_coordinates(float *coords, double *matrix, double zoom)
+float	*update_coordinates(float *coords, t_mlx *m)
 {
 	float	*coordinates;
 
 	coordinates = malloc(sizeof(float) * 3);
-	coordinates[0] = (float)(coords[0] * matrix[0] + coords[1] * matrix[1] + \
-			coords[2] * matrix[2] + matrix[3]);
-	coordinates[1] = (float)(coords[0] * matrix[4] + coords[1] * matrix[5] + \
-			coords[2] * matrix[6] + matrix[7]);
-	coordinates[2] = (float)(coords[0] * matrix[8] + coords[1] * matrix[9] + \
-			coords[2] * matrix[10] + matrix[11]);
-	coordinates[0] *= (float)zoom;
-	coordinates[1] *= (float)zoom;
-	coordinates[2] *= (float)zoom;
+	coordinates[0] = (float)(coords[0] * m->matrix_x[0] + coords[1] * \
+			m->matrix_x[1] + coords[2] * m->matrix_x[2] + m->matrix_x[3]);
+	coordinates[1] = (float)(coords[0] * m->matrix_y[0] + coords[1] * \
+			m->matrix_y[1] + coords[2] * m->matrix_y[2] + m->matrix_y[3]);
+	coordinates[2] = (float)(coords[0] * m->matrix_z[0] + coords[1] * \
+			m->matrix_z[1] + coords[2] * m->matrix_z[2] + m->matrix_z[3]);
+	coordinates[0] *= (float)m->zoom;
+	coordinates[1] *= (float)m->zoom;
+	coordinates[2] *= (float)m->zoom;
 	return (coordinates);
 }
 
@@ -53,18 +53,18 @@ void	update_matrix(t_mlx *m)
 	t_trigo	trigo;
 
 	trigo = create_trigo(m);
-	m->matrix[0] = trigo.cos_y * trigo.cos_z;
-	m->matrix[1] = -trigo.cos_y * trigo.sin_z;
-	m->matrix[2] = trigo.sin_y;
-	m->matrix[3] = m->pos_x;
-	m->matrix[4] = trigo.sin_x_sin_y * trigo.cos_z + trigo.cos_x * trigo.sin_z;
-	m->matrix[5] = -trigo.sin_x_sin_y * trigo.sin_z + trigo.cos_x * trigo.cos_z;
-	m->matrix[6] = -trigo.sin_x * trigo.cos_y;
-	m->matrix[7] = m->pos_y;
-	m->matrix[8] = -trigo.cos_x_sin_y * trigo.cos_z + trigo.sin_x * trigo.sin_z;
-	m->matrix[9] = trigo.cos_x_sin_y * trigo.sin_z + trigo.sin_x * trigo.cos_z;
-	m->matrix[10] = trigo.cos_x * trigo.cos_y;
-	m->matrix[11] = m->pos_z;
+	m->matrix_x[0] = trigo.cos_y * trigo.cos_z;
+	m->matrix_x[1] = -trigo.cos_y * trigo.sin_z;
+	m->matrix_x[2] = trigo.sin_y;
+	m->matrix_x[3] = m->pos_x;
+	m->matrix_y[0] = trigo.sin_x_sin_y * trigo.cos_z + trigo.cos_x * trigo.sin_z;
+	m->matrix_y[1] = -trigo.sin_x_sin_y * trigo.sin_z + trigo.cos_x * trigo.cos_z;
+	m->matrix_y[2] = -trigo.sin_x * trigo.cos_y;
+	m->matrix_y[3] = m->pos_y;
+	m->matrix_z[0] = -trigo.cos_x_sin_y * trigo.cos_z + trigo.sin_x * trigo.sin_z;
+	m->matrix_z[1] = trigo.cos_x_sin_y * trigo.sin_z + trigo.sin_x * trigo.cos_z;
+	m->matrix_z[2] = trigo.cos_x * trigo.cos_y;
+	m->matrix_z[3] = m->pos_z;
 }
 
 void	create_matrix(t_mlx *m)
@@ -76,23 +76,26 @@ void	create_matrix(t_mlx *m)
 	m->pos_y = 0;
 	m->pos_z = 0;
 	m->zoom = 1;
-	m->matrix = malloc(sizeof(double) * 16);
-	m->matrix[0] = 1;
-	m->matrix[1] = 0;
-	m->matrix[2] = 0;
-	m->matrix[3] = 0;
-	m->matrix[4] = 0;
-	m->matrix[5] = 1;
-	m->matrix[6] = 0;
-	m->matrix[7] = 0;
-	m->matrix[8] = 0;
-	m->matrix[9] = 0;
-	m->matrix[10] = 1;
-	m->matrix[11] = 0;
-	m->matrix[12] = 0;
-	m->matrix[13] = 0;
-	m->matrix[14] = 0;
-	m->matrix[15] = 1;
+	m->matrix_w = malloc(sizeof(double) * 4);
+	m->matrix_x = malloc(sizeof(double) * 4);
+	m->matrix_y = malloc(sizeof(double) * 4);
+	m->matrix_z = malloc(sizeof(double) * 4);
+	m->matrix_x[0] = 1;
+	m->matrix_x[1] = 0;
+	m->matrix_x[2] = 0;
+	m->matrix_x[3] = 0;
+	m->matrix_y[0] = 0;
+	m->matrix_y[1] = 1;
+	m->matrix_y[2] = 0;
+	m->matrix_y[3] = 0;
+	m->matrix_z[0] = 0;
+	m->matrix_z[1] = 0;
+	m->matrix_z[2] = 1;
+	m->matrix_z[3] = 0;
+	m->matrix_w[0] = 0;
+	m->matrix_w[1] = 0;
+	m->matrix_w[2] = 0;
+	m->matrix_w[3] = 1;
 }
 
 int		set_coordinate(t_mlx *m, float xy, float z, int is_width)

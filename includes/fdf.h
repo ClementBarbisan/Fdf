@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/25 17:28:25 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/26 17:30:47 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,9 @@ typedef struct			s_opencl
 	cl_program			program;
 	cl_context			context;
 	cl_int				error;
-	cl_kernel			*kernel;
+	cl_kernel			*kernel_x;
+	cl_kernel			*kernel_y;
+	cl_kernel			*kernel_z;
 	cl_mem				*arg_kernel;
 	char				*filename;
 	cl_uint				nb_device;
@@ -66,8 +68,17 @@ typedef struct	s_mlx
 	void		*img;
 	t_img		img_struct;
 	float		***coordinates;
+	float		*coordinates_x;
+	float		*coordinates_y;
+	float		*coordinates_z;
+	float		*result_x;
+	float		*result_y;
+	float		*result_z;
 	int*		line_count;
-	double*		matrix;
+	double*		matrix_w;
+	double*		matrix_x;
+	double*		matrix_y;
+	double*		matrix_z;
 	double*		scale_matrix;
 	int			x1;
 	int			x2;
@@ -83,6 +94,8 @@ typedef struct	s_mlx
 	int			height;
 	int			width;
 	int			depth;
+	int			count;
+	cl_mem		*buffer_objects;
 	t_opencl	*opencl;
 }				t_mlx;
 
@@ -114,8 +127,7 @@ typedef struct	s_line
 
 void			initialize_opencl(t_opencl *opencl);
 void			free_stock(char ***stock);
-float*			update_coordinates(float* coordinates, double* matrix, \
-		double zoom);
+float*			update_coordinates(float* coordinates, t_mlx *m);
 void			ft_draw_wire(t_mlx *m, float*** coordinates, int i, int j);
 void			ft_draw_square(t_mlx *m, float*** coordinates, int i, int j);
 int				display(char ***stock, t_mlx m);

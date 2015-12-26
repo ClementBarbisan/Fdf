@@ -15,7 +15,8 @@ NAME = Fdf
 SRC = $(addprefix ./src/,fdf.c \
 	ft_parser.c \
 	ft_draw_wire.c \
-	ft_draw.c)
+	ft_draw.c \
+	ft_opencl.c)
 
 OBJ = $(addprefix ./obj/, $(notdir $(SRC:.c=.o)))
 
@@ -23,7 +24,7 @@ all: compile $(NAME)
 
 $(NAME): $(OBJ)
 	gcc -o $@ $^ -I./libft/includes -I./includes -L./ -lmlx \
-		-framework OpenGL -framework AppKit -L./libft -lft
+		-framework OpenGL -framework AppKit -framework OpenCL -L./libft -lft
 
 compile:
 	make -C ./libft

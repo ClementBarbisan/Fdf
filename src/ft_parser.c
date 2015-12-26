@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/25 17:19:58 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/26 18:10:04 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,14 +57,13 @@ void	free_parse(t_parse *parse)
 char	***ft_parser(t_parse *parse, t_mlx *m)
 {
 	int		i;
-	int		count;
 	char	***stock;
 
 	i = 0;
-	count = parse->number;
+	m->count = parse->number;
 	stock = malloc(sizeof(char **) * (parse->number + 1));
 	parse = parse->begin;
-	while (parse != NULL && i < count)
+	while (parse != NULL && i < m->count)
 	{
 		stock[i] = ft_strsplit(parse->line, ' ');
 		parse = parse->next;
