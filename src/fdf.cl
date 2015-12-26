@@ -8,5 +8,5 @@ __kernel void compute_matrix(__global const float zoom,
 {
 	int gid = get_global_id(0);
 	result[gid] = coordinates_x[gid] * matrix[0] + coordinates_y[gid] * matrix[1] + coordinates_z[gid] * matrix[2] + matrix[3];
-	result[gid] *= zoom;
+	result[gid] = result[gid] * zoom;
 }

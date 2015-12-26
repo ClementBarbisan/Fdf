@@ -6,7 +6,7 @@
 /*   By: cbarbisa <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/23 17:09:55 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/26 18:00:09 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/26 18:28:01 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,13 @@ cl_program	create_program(t_opencl *cl_struct, char *filename)
 			ft_putendl("CL_INVALID_BINARY");
 		else if (cl_struct->error == CL_BUILD_PROGRAM_FAILURE)
 			ft_putendl("CL_BUILD_PROGRAM_FAILURE");
+		size_t size = 0;
+		cl_struct->error = clGetProgramBuildInfo(program, cl_struct->devices[0], \
+				CL_PROGRAM_BUILD_STATUS, 0, NULL, &size);
+		char	*log = NULL;
+		cl_struct->error = clGetProgramBuildInfo(program, cl_struct->devices[0], \
+				CL_PROGRAM_BUILD_STATUS, size, log, NULL);
+		ft_putendl(log);
 		ft_putendl("Failed to build program.");
 		return (NULL);
 	}
