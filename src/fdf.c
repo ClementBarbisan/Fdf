@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/26 18:10:23 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/26 18:16:13 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,6 +307,15 @@ void	set_kernel_args(t_mlx *m)
 			globalWorkSize, localWorkSize, 0, NULL, NULL);
 	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->kernel_z[0], 1, NULL, \
 			globalWorkSize, localWorkSize, 0, NULL, NULL);
+	m->result_x = malloc(sizeof(float) * m->count);
+	m->result_y = malloc(sizeof(float) * m->count);
+	m->result_z = malloc(sizeof(float) * m->count);
+	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[6], CL_TRUE, \
+			0, m->count * sizeof(float), m->result_x, 0, NULL, NULL);
+	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[7], CL_TRUE, \
+			0, m->count * sizeof(float), m->result_y, 0, NULL, NULL);
+	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[8], CL_TRUE, \
+			0, m->count * sizeof(float), m->result_z, 0, NULL, NULL);
 }
 
 int		display(char ***stock, t_mlx m)
