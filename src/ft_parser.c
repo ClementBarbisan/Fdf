@@ -54,18 +54,31 @@ void	free_parse(t_parse *parse)
 	}
 }
 
+int		ft_ptrlength(char **ptr)
+{
+	int	i;
+
+	i = 0;
+	while (ptr[i] != NULL)
+		i++;
+	return (i);	
+}
+
 char	***ft_parser(t_parse *parse, t_mlx *m)
 {
 	int		i;
+	int		count;
 	char	***stock;
 
 	i = 0;
-	m->count = parse->number;
+	count = parse->number;
+	m->count = 0;
 	stock = malloc(sizeof(char **) * (parse->number + 1));
 	parse = parse->begin;
-	while (parse != NULL && i < m->count)
+	while (parse != NULL && i < count)
 	{
 		stock[i] = ft_strsplit(parse->line, ' ');
+		m->count += ft_ptrlength(stock[i]);
 		parse = parse->next;
 		i++;
 	}

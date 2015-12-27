@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <fdf.h>
+#include <stdio.h>
 
 cl_context		create_context(t_opencl *cl_struct)
 {
@@ -100,6 +101,7 @@ char					*open_file(char *filename)
 cl_command_queue		*create_commmand_queue(t_opencl *cl_struct)
 {
 	cl_command_queue		*queue;
+	size_t					size;
 	size_t					i;
 
 	i = 0;
@@ -110,6 +112,8 @@ cl_command_queue		*create_commmand_queue(t_opencl *cl_struct)
 		ft_putendl("Failed to get number of devices available.");
 		return (NULL);
 	}
+	//test
+	cl_struct->nb_device = 1;
 	cl_struct->devices = malloc(sizeof(cl_device_id) * (cl_struct->nb_device / \
 				sizeof(cl_device_id)));
 	if (clGetDeviceIDs(cl_struct->platform_id, CL_DEVICE_TYPE_GPU, cl_struct->nb_device, \
@@ -118,6 +122,12 @@ cl_command_queue		*create_commmand_queue(t_opencl *cl_struct)
 		ft_putendl("Failed to get device IDs.");
 		return (NULL);
 	}
+	cl_struct->error = clGetDeviceInfo(cl_struct->devices[0], CL_DEVICE_MAX_WORK_GROUP_SIZE, 0, NULL, &size);
+	cl_struct->error = clGetDeviceInfo(cl_struct->devices[0], CL_DEVICE_MAX_WORK_GROUP_SIZE, size, &cl_struct->maxGlobalWorkSize, 0);
+	cl_struct->error = clGetDeviceInfo(cl_struct->devices[0], CL_DEVICE_MAX_WORK_ITEM_SIZES, 0, NULL, &size);
+	cl_struct->maxWorkItemsSize = malloc(size);
+	cl_struct->error = clGetDeviceInfo(cl_struct->devices[0], CL_DEVICE_MAX_WORK_ITEM_SIZES, size, cl_struct->maxWorkItemsSize, 0);
+
 	queue = malloc(sizeof(cl_command_queue) * cl_struct->nb_device);
 	while (i < cl_struct->nb_device)
 	{
@@ -154,13 +164,19 @@ cl_program	create_program(t_opencl *cl_struct, char *filename)
 			ft_putendl("CL_INVALID_BINARY");
 		else if (cl_struct->error == CL_BUILD_PROGRAM_FAILURE)
 			ft_putendl("CL_BUILD_PROGRAM_FAILURE");
-		size_t size = 0;
-		cl_struct->error = clGetProgramBuildInfo(program, cl_struct->devices[0], \
-				CL_PROGRAM_BUILD_STATUS, 0, NULL, &size);
-		char	*log = NULL;
-		cl_struct->error = clGetProgramBuildInfo(program, cl_struct->devices[0], \
-				CL_PROGRAM_BUILD_STATUS, size, log, NULL);
-		ft_putendl(log);
+		cl_build_status status;
+		size_t size;
+		char	*programLog;
+        clGetProgramBuildInfo(program, cl_struct->devices[0], CL_PROGRAM_BUILD_STATUS, 
+                sizeof(cl_build_status), &status, NULL);
+        clGetProgramBuildInfo(program, cl_struct->devices[0], 
+                CL_PROGRAM_BUILD_LOG, 0, NULL, &size);
+        programLog = (char*) calloc (size+1, sizeof(char));
+        clGetProgramBuildInfo(program, cl_struct->devices[0], 
+                CL_PROGRAM_BUILD_LOG, size+1, programLog, NULL);
+        printf("Build failed; error=%d, status=%d, programLog:nn%s", 
+                cl_struct->error, status, programLog);
+        free(programLog);
 		ft_putendl("Failed to build program.");
 		return (NULL);
 	}

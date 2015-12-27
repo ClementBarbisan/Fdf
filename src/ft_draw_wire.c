@@ -76,10 +76,10 @@ void	create_matrix(t_mlx *m)
 	m->pos_y = 0;
 	m->pos_z = 0;
 	m->zoom = 1;
-	m->matrix_w = malloc(sizeof(double) * 4);
-	m->matrix_x = malloc(sizeof(double) * 4);
-	m->matrix_y = malloc(sizeof(double) * 4);
-	m->matrix_z = malloc(sizeof(double) * 4);
+	m->matrix_w = malloc(sizeof(float) * 4);
+	m->matrix_x = malloc(sizeof(float) * 4);
+	m->matrix_y = malloc(sizeof(float) * 4);
+	m->matrix_z = malloc(sizeof(float) * 4);
 	m->matrix_x[0] = 1;
 	m->matrix_x[1] = 0;
 	m->matrix_x[2] = 0;
@@ -114,7 +114,6 @@ void	ft_draw_wire(t_mlx *m, float ***coordinates, int i, int j)
 {
 	int	height1;
 	int	height2;
-
 	m->x1 = set_coordinate(m, coordinates[i][j][0], coordinates[i][j][2], 1);
 	m->y1 = set_coordinate(m, coordinates[i][j][1], coordinates[i][j][2], 0);
 	height1 = m->coordinates[i][j][2] * (20 * ((m->height + 1) / 2));
@@ -126,7 +125,7 @@ void	ft_draw_wire(t_mlx *m, float ***coordinates, int i, int j)
 		ft_draw_line(m, height1, height2);
 	}
 	if (i + 1 < m->depth && j < m->line_count[i + 1])
-	{
+	{		
 		m->x2 = set_coordinate(m, coordinates[i + 1][j][0], coordinates[i + 1][j][2], 1);
 		m->y2 = set_coordinate(m, coordinates[i + 1][j][1], coordinates[i + 1][j][2], 0);
 		height2 = m->coordinates[i + 1][j][2] * (20 * ((m->height + 1) / 2));

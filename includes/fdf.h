@@ -14,6 +14,7 @@
 # define FDF_H
 
 #include <OpenCL/cl.h>
+#include <math.h>
 #include <libft.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -55,6 +56,8 @@ typedef struct			s_opencl
 	cl_kernel			*kernel_y;
 	cl_kernel			*kernel_z;
 	cl_mem				*arg_kernel;
+	size_t				maxGlobalWorkSize;
+	size_t				*maxWorkItemsSize;
 	char				*filename;
 	cl_uint				nb_device;
 }						t_opencl;
@@ -75,19 +78,19 @@ typedef struct	s_mlx
 	float		*result_y;
 	float		*result_z;
 	int*		line_count;
-	double*		matrix_w;
-	double*		matrix_x;
-	double*		matrix_y;
-	double*		matrix_z;
-	double*		scale_matrix;
+	float*		matrix_w;
+	float*		matrix_x;
+	float*		matrix_y;
+	float*		matrix_z;
+	float*		scale_matrix;
 	int			x1;
 	int			x2;
 	int			y1;
 	int			y2;
-	double		pos_x;
-	double		pos_y;
-	double		pos_z;
-	double		zoom;
+	float		pos_x;
+	float		pos_y;
+	float		pos_z;
+	float		zoom;
 	double		rotation_x;
 	double		rotation_y;
 	double		rotation_z;
