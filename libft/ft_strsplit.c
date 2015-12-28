@@ -24,7 +24,9 @@ static char	*ft_split(char const *s, char c, int *k)
 	i = *k;
 	while (s[*k] && s[*k] != c)
 		(*k)++;
-	result = malloc(sizeof(char) * (*k - i + 1));
+	if (*k - i <= 0)
+		return (NULL);
+	result = malloc(sizeof(char) * ((*k - i) + 1));
 	while (i != *k && s[i] != c)
 	{
 		result[l] = s[i];
@@ -41,12 +43,18 @@ int			search_char(char const *line, char c)
 	int	count;
 
 	i = 0;
-	count = 0;
+	count = 1;
 	while (line[i] != '\0')
 	{
 		if (line[i] == c && line[i + 1] != '\0')
-			count++;
-		i++;
+		{
+			while (line[i] && line[i] == c)
+				i++;
+			if (line[i])
+				count++;
+		}
+		else
+			i++;
 	}
 	return (count);
 }
@@ -62,7 +70,7 @@ char		**ft_strsplit(char const *s, char c)
 	result = NULL;
 	if (!s || s[0] == '\0')
 		return (result);
-	result = (char **)malloc(sizeof(char*) * (search_char(s, c) + 1));
+	result = malloc(sizeof(char*) * (search_char(s, c) + 1));
 	while (s[k])
 	{
 		if (s[k] && s[k] == c)
@@ -70,9 +78,10 @@ char		**ft_strsplit(char const *s, char c)
 		if (s[k] && s[k] != c)
 		{
 			result[j] = ft_split(s, c, &k);
-			j++;
+			if (result[j] && ft_strlen(result[j]) > 0)
+				j++;
 		}
+		result[j] = NULL;
 	}
-	result[j] = NULL;
 	return (result);
 }

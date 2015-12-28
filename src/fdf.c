@@ -97,20 +97,20 @@ void	set_kernel_args_coordinates(t_mlx *m)
 		return;
 	}
 	size_t globalWorkSize[1] = {m->count};
-//	size_t tmp = 512;
-//	while (m->count % tmp != 0)
-//		tmp--;
-//	size_t localWorkSize[1] = {tmp};
+	size_t tmp = 512;
+	while (m->count % tmp != 0)
+		tmp--;
+	size_t localWorkSize[1] = {tmp};
 	
 	m->result_x = malloc(sizeof(float) * m->count);
 	m->result_y = malloc(sizeof(float) * m->count);
 	m->result_z = malloc(sizeof(float) * m->count);
 	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->kernel_x[0], 1, NULL, \
-			globalWorkSize, NULL, 0, NULL, NULL);
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
 	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->kernel_y[0], 1, NULL, \
-			globalWorkSize, NULL, 0, NULL, NULL);
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
 	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->kernel_z[0], 1, NULL, \
-			globalWorkSize, NULL, 0, NULL, NULL);
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
 	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[6], CL_FALSE, \
 			0, m->count * sizeof(float), m->result_x, 0, NULL, NULL);
 	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[7], CL_FALSE, \
@@ -162,17 +162,17 @@ void	set_kernel_args_rasterize(t_mlx *m)
 	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_y[0], 6, sizeof(cl_mem), &m->buffer_objects[13]);
 
 	size_t globalWorkSize[1] = {m->count};
-//	size_t tmp = 512;
-//	while (m->count % tmp != 0)
-//		tmp--;
-//	size_t localWorkSize[1] = {tmp};
+	size_t tmp = 512;
+	while (m->count % tmp != 0)
+		tmp--;
+	size_t localWorkSize[1] = {tmp};
 
 	m->rasterize_x = malloc(sizeof(int) * m->count);
 	m->rasterize_y = malloc(sizeof(int) * m->count);
 	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->rasterize_x[0], 1, NULL, \
-			globalWorkSize, NULL, 0, NULL, NULL);
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
 	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->rasterize_y[0], 1, NULL, \
-			globalWorkSize, NULL, 0, NULL, NULL);
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
 	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[12], CL_FALSE, \
 			0, m->count * sizeof(int), m->rasterize_x, 0, NULL, NULL);
 	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[13], CL_TRUE, \
@@ -445,9 +445,6 @@ void	ft_add_coordinates(t_mlx *m, char ***stock)
 
 int		display(char ***stock, t_mlx m)
 {
-	size_t	i;
-
-	i = 0;
 	ft_area(&m, stock);
 	m.scale = SCALE / (m.width / 8);
 	if (m.opencl)

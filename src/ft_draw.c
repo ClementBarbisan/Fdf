@@ -48,7 +48,7 @@ int		set_color(int height)
 {
 	int	color;
 
-	color = 16777215 - (height * 42373567 % 16777215);
+	color = 16777215 - (height * (42373567 / 50) % 16777215);
 	return (color);
 }
 

@@ -61,7 +61,7 @@ int		ft_ptrlength(char **ptr)
 	i = 0;
 	while (ptr[i] != NULL)
 		i++;
-	return (i);	
+	return (i);
 }
 
 char	***ft_parser(t_parse *parse, t_mlx *m)
