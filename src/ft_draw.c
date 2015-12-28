@@ -75,7 +75,6 @@ void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
 			|| (l.x > l.x_max && l.x_max - l.x_min < 0)))
 	{
 		tmp_y = ft_coord(l, x, y);
-		// shift += rand() % 3 - 1;
 		if (l.x > 0 && l.x < WINWIDTH && tmp_y < WINHEIGHT && tmp_y > 0)
 			ft_pixel_put(&m->img_struct, l.x, tmp_y + shift, l.color);
 		if (l.x > l.x_max)
@@ -97,7 +96,6 @@ void	ft_draw_y(t_mlx *m, t_line l, int x, int y)
 			|| (l.y > l.y_max && l.y_max - l.y_min < 0)))
 	{
 		tmp_x = ft_coord(l, x, y);
-		// shift += rand() % 3 - 1;
 		if (l.y > 0 && l.y < WINHEIGHT && tmp_x < WINWIDTH && tmp_x > 0)
 			ft_pixel_put(&m->img_struct, tmp_x + shift, l.y, l.color);
 		if (l.y < l.y_max)

@@ -446,7 +446,7 @@ void	ft_add_coordinates(t_mlx *m, char ***stock)
 int		display(char ***stock, t_mlx m)
 {
 	ft_area(&m, stock);
-	m.scale = SCALE / (m.width / 8);
+	m.scale = SCALE / ((m.width / 10) + 1);
 	if (m.opencl)
 		ft_add_coordinates_opencl(&m, stock);
 	ft_add_coordinates(&m, stock);
