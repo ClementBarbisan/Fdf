@@ -87,13 +87,17 @@ char	***ft_parser(t_parse *parse, t_mlx *m)
 	return (stock);
 }
 
-void	fill_coordinates(t_parse *parse, int face_on, t_opencl *opencl)
+void	fill_coordinates(t_parse *parse, t_options options)
 {
-	char	***stock;
-	t_mlx	m;
+	char		***stock;
+	t_opencl	opencl;
+	t_mlx		m;
 
-	m.face_on = face_on;
-	m.opencl = opencl;
+	m.face_on = options.faceon;
+	if (options.opencl > 0)
+		initialize_opencl(&m, &opencl);
+	else
+		m.opencl = NULL;
 	stock = ft_parser(parse, &m);
 	free_parse(parse);
 	display(stock, m);
@@ -142,21 +146,36 @@ t_parse	*fill_parse(int argc, char **argv)
 	return (parse);
 }
 
+t_options	check_options(int argc, char **argv, t_options options)
+{
+	int		i;
+
+	i = 2;
+	while (i < argc)
+	{
+		if (ft_strcmp(argv[i], "-face") == 0)
+			options.faceon = 1;
+		else if (ft_strcmp(argv[i], "-opencl") == 0)
+			options.opencl = 1;
+		i++;
+	}
+	if (options.faceon == -1 && options.opencl == -1)
+		ft_putendl("Wrong options.");
+	return (options);
+}
+
 int		main(int argc, char **argv)
 {
 	t_parse	*parse;
-	t_opencl	opencl;
-	int		face_on;
+	t_options	options;
 
-	face_on = 0;
 	parse = NULL;
-	if (argc >= 3 && ft_strcmp(argv[2], "-face") == 0)
-		face_on = 1;
-	else if (argc >= 3)
-	{
-		ft_putendl("Wrong options.");
+	options.faceon = -1;
+	options.opencl = -1;
+	if (argc >= 3)
+		options = check_options(argc, argv, options);
+	if (argc >= 3 && options.faceon == -1 && options.opencl == -1)
 		return (0);
-	}
 	if (argc > 1)
 	{
 		parse = fill_parse(argc, argv);
@@ -165,8 +184,7 @@ int		main(int argc, char **argv)
 			ft_putendl("Parsing failed.");
 			return (0);
 		}
-		initialize_opencl(&opencl);
-		fill_coordinates(parse, face_on, &opencl);
+		fill_coordinates(parse, options);
 	}
 	else
 		ft_putendl("Not enough arguments.");

@@ -183,7 +183,7 @@ cl_program	create_program(t_opencl *cl_struct, char *filename)
 	return (program);
 }
 
-void	initialize_opencl(t_opencl *opencl)
+void	initialize_opencl(t_mlx *m, t_opencl *opencl)
 {
 	cl_uint			i;
 
@@ -195,6 +195,8 @@ void	initialize_opencl(t_opencl *opencl)
 	opencl->kernel_x = malloc(sizeof(cl_kernel) * opencl->nb_device);
 	opencl->kernel_y = malloc(sizeof(cl_kernel) * opencl->nb_device);
 	opencl->kernel_z = malloc(sizeof(cl_kernel) * opencl->nb_device);
+	opencl->rasterize_x = malloc(sizeof(cl_kernel) * opencl->nb_device);
+	opencl->rasterize_y = malloc(sizeof(cl_kernel) * opencl->nb_device);
 	while (i < opencl->nb_device)
 	{
 			opencl->kernel_x[i] = clCreateKernel(opencl->program, \
@@ -203,8 +205,13 @@ void	initialize_opencl(t_opencl *opencl)
 					"compute_matrix", &opencl->error);
 			opencl->kernel_z[i] = clCreateKernel(opencl->program, \
 					"compute_matrix", &opencl->error);
+		opencl->rasterize_x[i] = clCreateKernel(opencl->program, \
+					"rasterize", &opencl->error);
+		opencl->rasterize_y[i] = clCreateKernel(opencl->program, \
+					"rasterize", &opencl->error);
 			if (opencl->error != CL_SUCCESS)
 				ft_putendl("Failed to create kernel.");
 		i++;
 	}
+	m->opencl = opencl;
 }

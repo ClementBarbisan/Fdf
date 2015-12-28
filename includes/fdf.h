@@ -26,6 +26,12 @@
 # define Z 3
 # define PI 3.14159265358979323846
 
+typedef struct	s_options
+{
+	int			faceon;
+	int			opencl;
+}				t_options;
+
 typedef struct	s_parse t_parse;
 
 struct			s_parse
@@ -55,6 +61,8 @@ typedef struct			s_opencl
 	cl_kernel			*kernel_x;
 	cl_kernel			*kernel_y;
 	cl_kernel			*kernel_z;
+	cl_kernel 			*rasterize_x;
+	cl_kernel 			*rasterize_y;
 	cl_mem				*arg_kernel;
 	size_t				maxGlobalWorkSize;
 	size_t				*maxWorkItemsSize;
@@ -71,6 +79,8 @@ typedef struct	s_mlx
 	void		*img;
 	t_img		img_struct;
 	float		***coordinates;
+	int			*rasterize_x;
+	int			*rasterize_y;
 	float		*coordinates_x;
 	float		*coordinates_y;
 	float		*coordinates_z;
@@ -128,7 +138,9 @@ typedef struct	s_line
 	int			y;
 }				t_line;
 
-void			initialize_opencl(t_opencl *opencl);
+void			ft_draw_square_opencl(t_mlx *m, int i, int j, int index);
+void			ft_draw_wire_opencl(t_mlx *m, int i, int j, int index);
+void			initialize_opencl(t_mlx *m, t_opencl *opencl);
 void			free_stock(char ***stock);
 float*			update_coordinates(float* coordinates, t_mlx *m);
 void			ft_draw_wire(t_mlx *m, float*** coordinates, int i, int j);

@@ -15,6 +15,7 @@
 #include <math.h>
 #include <fdf.h>
 #include <libft.h>
+#include <stdio.h>
 
 float	*update_coordinates(float *coords, t_mlx *m)
 {
@@ -110,10 +111,78 @@ int		set_coordinate(t_mlx *m, float xy, float z, int is_width)
 	return (result);
 }
 
+int		get_index(int *count_line, int i, int j)
+{
+	int count;
+	int k;
+
+	k = 0;
+	count = 0;
+	while (k < i)
+	{
+		count += count_line[k];
+		k++;
+	}
+	j--;
+	if (j >= 0)
+		count += j;
+	return (count);
+}
+
+void	ft_draw_wire_opencl(t_mlx *m, int i, int j, int index)
+{
+	int	height1;
+	int	height2;
+
+	m->x1 = m->rasterize_x[index + j];
+	m->y1 = m->rasterize_y[index + j];
+	height1 = m->coordinates[i][j][2] * (20 * ((m->height + 1) / 2));
+	if (j > 0)
+	{
+		m->x2 = m->rasterize_x[index + j - 1];
+		m->y2 = m->rasterize_y[index + j - 1];
+		height2 = m->coordinates[i][j - 1][2] * (20 * ((m->height + 1) / 2));
+		ft_draw_line(m, height1, height2);
+	}
+	if (i + 1 < m->depth && j < m->line_count[i + 1])
+	{
+		m->x2 = m->rasterize_x[index + m->line_count[i] + j];
+		m->y2 = m->rasterize_y[index + m->line_count[i] + j];
+		height2 = m->coordinates[i + 1][j][2] * (20 * ((m->height + 1) / 2));
+		ft_draw_line(m, height1, height2);
+	}
+}
+
+void	ft_draw_square_opencl(t_mlx *m, int i, int j, int index)
+{
+	int		height1;
+	int		height2;
+	int		k;
+
+	k = 0;
+	if (i + 1 < m->depth && j + 1 < m->line_count[i] && j + 1 < m->line_count[i + 1])
+	{
+		while (k < m->scale * m->zoom)
+		{
+			height1 = ((m->coordinates[i][j][2] + (m->coordinates[i][j + 1][2] - \
+					m->coordinates[i][j][2]) / ((float)m->scale / (float)m->zoom) * (float)k) * (20 * ((m->height + 1) / 2)));
+			height2 = ((m->coordinates[i + 1][j][2] + (m->coordinates[i + 1][j + 1][2] - \
+					m->coordinates[i + 1][j][2]) / ((float)m->scale / (float)m->zoom) * (float)k) * (20 * ((m->height + 1) / 2)));
+			m->x1 = m->rasterize_x[index + j] + ((float)(m->rasterize_x[index + j + 1] - m->rasterize_x[index + j])  / (float)m->scale / (float)m->zoom) * k;
+			m->y1 = m->rasterize_y[index + j] + ((float)(m->rasterize_y[index + j + 1] - m->rasterize_y[index + j]) / (float)m->scale / (float)m->zoom) * k;
+			m->x2 = m->rasterize_x[index + m->line_count[i] + j] + ((float)(m->rasterize_x[index + m->line_count[i] + j + 1] - m->rasterize_x[index + m->line_count[i] + j])  / (float)m->scale / (float)m->zoom) * k;
+			m->y2 =  m->rasterize_y[index + m->line_count[i] + j] + ((float)( m->rasterize_y[index + m->line_count[i] + j + 1] -  m->rasterize_y[index + m->line_count[i] + j])  / (float)m->scale / (float)m->zoom) * k;
+			ft_draw_line(m, height1, height2);
+			k++;
+		}
+	}
+}
+
 void	ft_draw_wire(t_mlx *m, float ***coordinates, int i, int j)
 {
 	int	height1;
 	int	height2;
+
 	m->x1 = set_coordinate(m, coordinates[i][j][0], coordinates[i][j][2], 1);
 	m->y1 = set_coordinate(m, coordinates[i][j][1], coordinates[i][j][2], 0);
 	height1 = m->coordinates[i][j][2] * (20 * ((m->height + 1) / 2));
@@ -125,7 +194,7 @@ void	ft_draw_wire(t_mlx *m, float ***coordinates, int i, int j)
 		ft_draw_line(m, height1, height2);
 	}
 	if (i + 1 < m->depth && j < m->line_count[i + 1])
-	{		
+	{
 		m->x2 = set_coordinate(m, coordinates[i + 1][j][0], coordinates[i + 1][j][2], 1);
 		m->y2 = set_coordinate(m, coordinates[i + 1][j][1], coordinates[i + 1][j][2], 0);
 		height2 = m->coordinates[i + 1][j][2] * (20 * ((m->height + 1) / 2));
@@ -137,13 +206,11 @@ void	ft_draw_square(t_mlx *m, float ***coordinates, int i, int j)
 {
 	int		height1;
 	int		height2;
-	int		tmp_z;
 	int		tmp_1;
 	int		tmp_2;
 	int		k;
 
 	k = 0;
-	tmp_z = 0;
 	if (i + 1 < m->depth && j + 1 < m->line_count[i] && j + 1 < m->line_count[i + 1])
 	{
 		while (k < m->scale * m->zoom)
@@ -152,16 +219,12 @@ void	ft_draw_square(t_mlx *m, float ***coordinates, int i, int j)
 					m->coordinates[i][j][2]) / ((float)m->scale / (float)m->zoom) * (float)k) * (20 * ((m->height + 1) / 2)));
 			height2 = ((m->coordinates[i + 1][j][2] + (m->coordinates[i + 1][j + 1][2] - \
 					m->coordinates[i + 1][j][2]) / ((float)m->scale / (float)m->zoom) * (float)k) * (20 * ((m->height + 1) / 2)));
-			tmp_z = coordinates[i][j][2] + (coordinates[i][j + 1][2] - \
-					coordinates[i][j][2]) / (float)m->scale / (float)m->zoom * ((float)k / (float)(20.0 * ((m->height + 1) / 2)));
 			tmp_1 = set_coordinate(m, coordinates[i][j][0], coordinates[i][j][2], 1);
 			tmp_2 = set_coordinate(m, coordinates[i][j + 1][0], coordinates[i][j + 1][2], 1);
 			m->x1 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale / (float)m->zoom) * k;
 			tmp_1 = set_coordinate(m, coordinates[i][j][1], coordinates[i][j][2], 0);
 			tmp_2 = set_coordinate(m, coordinates[i][j + 1][1], coordinates[i][j + 1][2], 0);
 			m->y1 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale / (float)m->zoom) * k;
-			tmp_z = coordinates[i + 1][j][2] + (coordinates[i + 1][j + 1][2] \
-					- coordinates[i + 1][j][2]) / (float)m->scale / (float)m->zoom * ((float)k / (float)(20.0 * ((m->height + 1) / 2)));
 			tmp_1 = set_coordinate(m, coordinates[i + 1][j][0], coordinates[i + 1][j][2], 1);
 			tmp_2 = set_coordinate(m, coordinates[i + 1][j + 1][0], coordinates[i + 1][j + 1][2], 1);
 			m->x2 = tmp_1 + ((float)(tmp_2 - tmp_1) / (float)m->scale / (float)m->zoom) * k;
