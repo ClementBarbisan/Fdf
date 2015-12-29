@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:19:01 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/22 18:14:21 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 10:06:15 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,17 @@ int		set_color(int height)
 void	add_color(int p1, int p2, t_line *l)
 {
 	if (l->height1 > l->height2 && p1 > p2)
-		l->color += ((float)(set_color(l->height1) - set_color(l->height2)) / (float)(p1 - p2)) * l->increment;
+		l->color += ((float)(set_color(l->height1) - set_color(l->height2)) / \
+				(float)(p1 - p2)) * l->increment;
 	else if (l->height1 > l->height2 && p1 <= p2)
-		l->color += ((float)(set_color(l->height1) - set_color(l->height2)) / (float)(p2 - p1)) * l->increment;
+		l->color += ((float)(set_color(l->height1) - set_color(l->height2)) / \
+				(float)(p2 - p1)) * l->increment;
 	else if (l->height1 <= l->height2 && p1 > p2)
-		l->color += ((float)(set_color(l->height2) - set_color(l->height1)) / (float)(p1 - p2)) * l->increment;
+		l->color += ((float)(set_color(l->height2) - set_color(l->height1)) / \
+				(float)(p1 - p2)) * l->increment;
 	else if (l->height1 <= l->height2 && p1 <= p2)
-		l->color += ((float)(set_color(l->height2) - set_color(l->height1)) / (float)(p2 - p1)) * l->increment;
+		l->color += ((float)(set_color(l->height2) - set_color(l->height1)) / \
+				(float)(p2 - p1)) * l->increment;
 }
 
 void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
@@ -133,7 +137,7 @@ t_line	ft_draw_init(t_mlx *m, int height1, int height2)
 	l.y_max = m->y1;
 	l.y_min = m->y2;
 	l.y = m->y2;
-	l.increment = 0.001;
+	l.increment = 0.0005;
 	l.color = set_color(l.height1);
 	return (l);
 }

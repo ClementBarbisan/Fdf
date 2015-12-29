@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/26 18:16:13 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 10:52:58 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_img	ft_img_init(t_mlx *m)
 	return (img);
 }
 
-void	free_coordinates(float ***coordinates, t_mlx *m)
+void	free_coords(float ***coords, t_mlx *m)
 {
 	int	i;
 	int	j;
@@ -36,184 +36,230 @@ void	free_coordinates(float ***coordinates, t_mlx *m)
 	j = 0;
 	while (i < m->depth)
 	{
-		while (j < m->line_count[i])
+		while (j < m->l_c[i])
 		{
-			free(coordinates[i][j]);
+			free(coords[i][j]);
 			j++;
 		}
-		free(coordinates[i]);
+		free(coords[i]);
 		j = 0;
 		i++;
 	}
-	free(coordinates);
+	free(coords);
 }
 
-void	create_buffers_coordinates(t_mlx *m)
+void	create_buffers_coords(t_mlx *m)
 {
-	m->buffer_objects = malloc(sizeof(cl_mem) * 14);
-	m->buffer_objects[0] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
-		CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->coordinates_x, NULL);
-	m->buffer_objects[1] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
-		CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->coordinates_y, NULL);
-	m->buffer_objects[2] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
-		CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->coordinates_z, NULL);
-	m->buffer_objects[3] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
+	m->buf = malloc(sizeof(cl_mem) * 14);
+	m->buf[0] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
+		CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->coords_x, NULL);
+	m->buf[1] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
+		CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->coords_y, NULL);
+	m->buf[2] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
+		CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->coords_z, NULL);
+	m->buf[3] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
 			CL_MEM_COPY_HOST_PTR, sizeof(float) * 4, m->matrix_x, NULL);
-	m->buffer_objects[4] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
+	m->buf[4] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
 			CL_MEM_COPY_HOST_PTR, sizeof(float) * 4, m->matrix_y, NULL);
-	m->buffer_objects[5] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
+	m->buf[5] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
 			CL_MEM_COPY_HOST_PTR, sizeof(float) * 4, m->matrix_z, NULL);
-	m->buffer_objects[6] = clCreateBuffer(m->opencl->context, CL_MEM_READ_WRITE, \
+	m->buf[6] = clCreateBuffer(m->cl->context, CL_MEM_READ_WRITE, \
 			sizeof(float) * m->count, NULL, NULL);
-	m->buffer_objects[7] = clCreateBuffer(m->opencl->context, CL_MEM_READ_WRITE, \
+	m->buf[7] = clCreateBuffer(m->cl->context, CL_MEM_READ_WRITE, \
 			sizeof(float) * m->count, NULL, NULL);
-	m->buffer_objects[8] = clCreateBuffer(m->opencl->context, CL_MEM_READ_WRITE, \
+	m->buf[8] = clCreateBuffer(m->cl->context, CL_MEM_READ_WRITE, \
 			sizeof(float) * m->count, NULL, NULL);
 }
 
-void	set_kernel_args_coordinates(t_mlx *m)
+void	read_buffer_coords(t_mlx *m)
 {
-	m->opencl->error = clSetKernelArg(m->opencl->kernel_x[0], 0, sizeof(float), &m->zoom);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_x[0], 1, sizeof(cl_mem), &m->buffer_objects[3]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_x[0], 2, sizeof(cl_mem), &m->buffer_objects[0]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_x[0], 3, sizeof(cl_mem), &m->buffer_objects[1]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_x[0], 4, sizeof(cl_mem), &m->buffer_objects[2]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_x[0], 5, sizeof(cl_mem), &m->buffer_objects[6]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_y[0], 0, sizeof(float), &m->zoom);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_y[0], 1, sizeof(cl_mem), &m->buffer_objects[4]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_y[0], 2, sizeof(cl_mem), &m->buffer_objects[0]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_y[0], 3, sizeof(cl_mem), &m->buffer_objects[1]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_y[0], 4, sizeof(cl_mem), &m->buffer_objects[2]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_y[0], 5, sizeof(cl_mem), &m->buffer_objects[7]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_z[0], 0, sizeof(float), &m->zoom);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_z[0], 1, sizeof(cl_mem), &m->buffer_objects[5]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_z[0], 2, sizeof(cl_mem), &m->buffer_objects[0]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_z[0], 3, sizeof(cl_mem), &m->buffer_objects[1]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_z[0], 4, sizeof(cl_mem), &m->buffer_objects[2]);
-	m->opencl->error |= clSetKernelArg(m->opencl->kernel_z[0], 5, sizeof(cl_mem), &m->buffer_objects[8]);
-	if (m->opencl->error != CL_SUCCESS)
-	{
-		ft_putendl("Error when setting kernel arguments");
-		return;
-	}
-	size_t globalWorkSize[1] = {m->count};
-	size_t tmp = 512;
-	while (m->count % tmp != 0)
-		tmp--;
-	size_t localWorkSize[1] = {tmp};
-	
 	m->result_x = malloc(sizeof(float) * m->count);
 	m->result_y = malloc(sizeof(float) * m->count);
 	m->result_z = malloc(sizeof(float) * m->count);
-	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->kernel_x[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
-	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->kernel_y[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
-	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->kernel_z[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
-	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[6], CL_FALSE, \
+	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], m->buf[6], CL_FALSE, \
 			0, m->count * sizeof(float), m->result_x, 0, NULL, NULL);
-	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[7], CL_FALSE, \
+	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], m->buf[7], CL_FALSE, \
 			0, m->count * sizeof(float), m->result_y, 0, NULL, NULL);
-	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[8], CL_TRUE, \
+	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], m->buf[8], CL_TRUE, \
 			0, m->count * sizeof(float), m->result_z, 0, NULL, NULL);
-	if (m->opencl->error != CL_SUCCESS)
+	if (m->cl->err != CL_SUCCESS)
 	{
-		ft_putendl("Error on readd buffer");
+		ft_putendl("err on readd buffer coordinates");
 		return;
 	}
 }
 
-void	create_buffers_rasterize(t_mlx *m)
+void	enqueue_kernel_coords(t_mlx *m)
 {
-	m->buffer_objects[9] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
+	size_t *globalWorkSize;
+	size_t tmp;
+	size_t *localWorkSize;
+
+	globalWorkSize = malloc(sizeof(size_t));
+	localWorkSize = malloc(sizeof(size_t));
+	globalWorkSize[0] = m->count;
+	tmp = 512;
+	while (m->count % tmp != 0)
+		tmp--;
+	localWorkSize[0] = tmp;
+	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_x[0], 1, NULL, \
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
+	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_y[0], 1, NULL, \
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
+	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_z[0], 1, NULL, \
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
+	if (m->cl->err != CL_SUCCESS)
+	{
+		ft_putendl("err on enqueue_kernel for coordinates");
+		return;
+	}
+}
+
+void	set_kernel_args_coords(t_mlx *m)
+{
+	m->cl->err = clSetKernelArg(m->cl->kl_x[0], 0, sizeof(float), &m->zoom);
+	m->cl->err |= clSetKernelArg(m->cl->kl_x[0], 1, sizeof(cl_mem), &m->buf[3]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_x[0], 2, sizeof(cl_mem), &m->buf[0]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_x[0], 3, sizeof(cl_mem), &m->buf[1]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_x[0], 4, sizeof(cl_mem), &m->buf[2]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_x[0], 5, sizeof(cl_mem), &m->buf[6]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_y[0], 0, sizeof(float), &m->zoom);
+	m->cl->err |= clSetKernelArg(m->cl->kl_y[0], 1, sizeof(cl_mem), &m->buf[4]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_y[0], 2, sizeof(cl_mem), &m->buf[0]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_y[0], 3, sizeof(cl_mem), &m->buf[1]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_y[0], 4, sizeof(cl_mem), &m->buf[2]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_y[0], 5, sizeof(cl_mem), &m->buf[7]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_z[0], 0, sizeof(float), &m->zoom);
+	m->cl->err |= clSetKernelArg(m->cl->kl_z[0], 1, sizeof(cl_mem), &m->buf[5]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_z[0], 2, sizeof(cl_mem), &m->buf[0]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_z[0], 3, sizeof(cl_mem), &m->buf[1]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_z[0], 4, sizeof(cl_mem), &m->buf[2]);
+	m->cl->err |= clSetKernelArg(m->cl->kl_z[0], 5, sizeof(cl_mem), &m->buf[8]);
+	if (m->cl->err != CL_SUCCESS)
+	{
+		ft_putendl("err when setting kernel arguments coordinates");
+		return;
+	}
+}
+
+void	create_buffers_r(t_mlx *m)
+{
+	m->buf[9] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
 			CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->result_x, NULL);
-	m->buffer_objects[10] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
+	m->buf[10] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
 			CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->result_y, NULL);
-	m->buffer_objects[11] = clCreateBuffer(m->opencl->context, CL_MEM_READ_ONLY | \
+	m->buf[11] = clCreateBuffer(m->cl->context, CL_MEM_READ_ONLY | \
 			CL_MEM_COPY_HOST_PTR, sizeof(float) * m->count, m->result_z, NULL);
-	m->buffer_objects[12] = clCreateBuffer(m->opencl->context, CL_MEM_READ_WRITE, \
+	m->buf[12] = clCreateBuffer(m->cl->context, CL_MEM_READ_WRITE, \
 			sizeof(int) * m->count, NULL, NULL);
-	m->buffer_objects[13] = clCreateBuffer(m->opencl->context, CL_MEM_READ_WRITE, \
+	m->buf[13] = clCreateBuffer(m->cl->context, CL_MEM_READ_WRITE, \
 			sizeof(int) * m->count, NULL, NULL);
 }
 
-void	set_kernel_args_rasterize(t_mlx *m)
+void	read_buffers(t_mlx *m)
+{
+	m->r_x = malloc(sizeof(int) * m->count);
+	m->r_y = malloc(sizeof(int) * m->count);
+	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], \
+			m->buf[12], CL_FALSE, \
+			0, m->count * sizeof(int), m->r_x, 0, NULL, NULL);
+	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], \
+			m->buf[13], CL_TRUE, \
+			0, m->count * sizeof(int), m->r_y, 0, NULL, NULL);
+	if (m->cl->err != CL_SUCCESS)
+	{
+		ft_putendl("err on readd buffer for rasterize");
+		return;
+	}
+}
+
+void	enqueue_kernel(t_mlx *m)
+{
+	size_t *globalWorkSize;
+	size_t tmp;
+	size_t *localWorkSize;
+
+	globalWorkSize = malloc(sizeof(size_t));
+	localWorkSize = malloc(sizeof(size_t));
+	globalWorkSize[0] = m->count;
+	tmp = 512;
+	while (m->count % tmp != 0)
+		tmp--;
+	localWorkSize[0] = tmp;
+	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], \
+			m->cl->r_x[0], 1, NULL, \
+			globalWorkSize, localWorkSize, 0, NULL, NULL);
+	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], \
+		m->cl->r_y[0], 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
+	if (m->cl->err != CL_SUCCESS)
+	{
+		ft_putendl("err on enqueue_kernel for rasterize");
+		return;
+	}
+}
+
+void	set_kernel_args_r(t_mlx *m)
 {
 	float width_win = WINWIDTH;
 	float height_win = WINHEIGHT;
 	float depth = Z;
 	float width = m->width;
 	float depthOffset = m->depth;
-	float scale = m->scale;
-	m->opencl->error = clSetKernelArg(m->opencl->rasterize_x[0], 0, sizeof(cl_mem), &m->buffer_objects[9]);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_x[0], 1, sizeof(cl_mem), &m->buffer_objects[11]);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_x[0], 2, sizeof(float), &depth);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_x[0], 3, sizeof(float), &width);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_x[0], 4, sizeof(float), &scale);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_x[0], 5, sizeof(float), &width_win);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_x[0], 6, sizeof(cl_mem), &m->buffer_objects[12]);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_y[0], 0, sizeof(cl_mem), &m->buffer_objects[10]);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_y[0], 1, sizeof(cl_mem), &m->buffer_objects[11]);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_y[0], 2, sizeof(float), &depth);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_y[0], 3, sizeof(float), &depthOffset);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_y[0], 4, sizeof(float), &scale);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_y[0], 5, sizeof(float), &height_win);
-	m->opencl->error |= clSetKernelArg(m->opencl->rasterize_y[0], 6, sizeof(cl_mem), &m->buffer_objects[13]);
-
-	size_t globalWorkSize[1] = {m->count};
-	size_t tmp = 512;
-	while (m->count % tmp != 0)
-		tmp--;
-	size_t localWorkSize[1] = {tmp};
-
-	m->rasterize_x = malloc(sizeof(int) * m->count);
-	m->rasterize_y = malloc(sizeof(int) * m->count);
-	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->rasterize_x[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
-	m->opencl->error = clEnqueueNDRangeKernel(m->opencl->queue[0], m->opencl->rasterize_y[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
-	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[12], CL_FALSE, \
-			0, m->count * sizeof(int), m->rasterize_x, 0, NULL, NULL);
-	m->opencl->error = clEnqueueReadBuffer(m->opencl->queue[0], m->buffer_objects[13], CL_TRUE, \
-			0, m->count * sizeof(int), m->rasterize_y, 0, NULL, NULL);
-	if (m->opencl->error != CL_SUCCESS)
+	m->cl->err = clSetKernelArg(m->cl->r_x[0], 0, sizeof(cl_mem), &m->buf[9]);
+	m->cl->err |= clSetKernelArg(m->cl->r_x[0], 1, sizeof(cl_mem), &m->buf[11]);
+	m->cl->err |= clSetKernelArg(m->cl->r_x[0], 2, sizeof(float), &depth);
+	m->cl->err |= clSetKernelArg(m->cl->r_x[0], 3, sizeof(float), &width);
+	m->cl->err |= clSetKernelArg(m->cl->r_x[0], 4, sizeof(float), &m->scale);
+	m->cl->err |= clSetKernelArg(m->cl->r_x[0], 5, sizeof(float), &width_win);
+	m->cl->err |= clSetKernelArg(m->cl->r_x[0], 6, sizeof(cl_mem), &m->buf[12]);
+	m->cl->err |= clSetKernelArg(m->cl->r_y[0], 0, sizeof(cl_mem), &m->buf[10]);
+	m->cl->err |= clSetKernelArg(m->cl->r_y[0], 1, sizeof(cl_mem), &m->buf[11]);
+	m->cl->err |= clSetKernelArg(m->cl->r_y[0], 2, sizeof(float), &depth);
+	m->cl->err |= clSetKernelArg(m->cl->r_y[0], 3, sizeof(float), &depthOffset);
+	m->cl->err |= clSetKernelArg(m->cl->r_y[0], 4, sizeof(float), &m->scale);
+	m->cl->err |= clSetKernelArg(m->cl->r_y[0], 5, sizeof(float), &height_win);
+	m->cl->err |= clSetKernelArg(m->cl->r_y[0], 6, sizeof(cl_mem), &m->buf[13]);
+	if (m->cl->err != CL_SUCCESS)
 	{
-		ft_putendl("Error on readd buffer");
+		ft_putendl("err on set args for rasterize");
 		return;
 	}
 }
 
-void	copy_coordinates_opencl(t_mlx *m)
+void	copy_coords_opencl(t_mlx *m)
 {
-	create_buffers_coordinates(m);
-	set_kernel_args_coordinates(m);
-	create_buffers_rasterize(m);
-	set_kernel_args_rasterize(m);
+	create_buffers_coords(m);
+	set_kernel_args_coords(m);
+	enqueue_kernel_coords(m);
+	read_buffer_coords(m);
+	create_buffers_r(m);
+	set_kernel_args_r(m);
+	enqueue_kernel(m);
+	read_buffers(m);
 }
 
-float	***copy_coordinates(t_mlx *m)
+float	***copy_coords(t_mlx *m)
 {
-	float	***coordinates;
+	float	***coords;
 	int		i;
 	int		j;
 
 	i = 0;
 	j = 0;
-	coordinates = malloc(sizeof(float**) * m->depth);
+	coords = malloc(sizeof(float**) * m->depth);
 	while (i < m->depth)
 	{
-		coordinates[i] = malloc(sizeof(float*) * m->line_count[i]);
-		while (j < m->line_count[i])
+		coords[i] = malloc(sizeof(float*) * m->l_c[i]);
+		while (j < m->l_c[i])
 		{
-			coordinates[i][j] = update_coordinates(m->coordinates[i][j], \
+			coords[i][j] = update_coords(m->coords[i][j], \
 					m);
 			j++;
 		}
 		i++;
 		j = 0;
 	}
-	return (coordinates);
+	return (coords);
 }
 
 void	display_img(t_mlx *m)
@@ -235,6 +281,13 @@ void	free_opencl(t_mlx *m)
 	test = m;
 }
 
+void	update_opencl(t_mlx *m)
+{
+	update_matrix(m);
+	copy_coords_opencl(m);
+	update_img(m);
+}
+
 int		expose_hook_opencl(t_mlx *m)
 {
 	int		i;
@@ -244,16 +297,13 @@ int		expose_hook_opencl(t_mlx *m)
 	i = 0;
 	j = 0;
 	index = 0;
-	update_matrix(m);
-	copy_coordinates_opencl(m);
-	update_img(m);
+	update_opencl(m);
 	while (i < m->depth)
 	{
 		if (i > 0)
-			index += m->line_count[i - 1];
-		while (j < m->line_count[i])
+			index += m->l_c[i - 1];
+		while (j < m->l_c[i])
 		{
-
 			if (m->face_on == 1)
 				ft_draw_square_opencl(m, i, j, index);
 			else
@@ -272,27 +322,27 @@ int		expose_hook(t_mlx *m)
 {
 	int		i;
 	int		j;
-	float	***coordinates;
+	float	***coords;
 
 	i = 0;
 	j = 0;
 	update_matrix(m);
-	coordinates = copy_coordinates(m);
+	coords = copy_coords(m);
 	update_img(m);
 	while (i < m->depth)
 	{
-		while (j < m->line_count[i])
+		while (j < m->l_c[i])
 		{
 			if (m->face_on == 1)
-				ft_draw_square(m, coordinates, i, j);
+				ft_draw_square(m, coords, i, j);
 			else
-				ft_draw_wire(m, coordinates, i, j);
+				ft_draw_wire(m, coords, i, j);
 			j++;
 		}
 		i++;
 		j = 0;
 	}
-	free_coordinates(coordinates, m);
+	free_coords(coords, m);
 	display_img(m);
 	return (0);
 }
@@ -351,7 +401,7 @@ int		key_hook(int keycode, t_mlx *m)
 	}
 	else if (keycode >= 12 && keycode <= 15)
 		change_rotation(keycode, m);
-	if (m->opencl)
+	if (m->cl)
 		expose_hook_opencl(m);
 	else
 		expose_hook(m);
@@ -367,7 +417,7 @@ void	ft_area(t_mlx *m, char ***stock)
 	j = 0;
 	m->height = 1;
 	m->width = 0;
-	m->line_count = malloc(sizeof(int) * m->depth);
+	m->l_c = malloc(sizeof(int) * m->depth);
 	while (stock[i] != NULL)
 	{
 		while (stock[i][j] != NULL)
@@ -380,13 +430,13 @@ void	ft_area(t_mlx *m, char ***stock)
 				m->width = j;
 			j++;
 		}
-		m->line_count[i] = j;
+		m->l_c[i] = j;
 		j = 0;
 		i++;
 	}
 }
 
-void	ft_add_coordinates_opencl(t_mlx *m, char ***stock)
+void	ft_add_coords_opencl(t_mlx *m, char ***stock)
 {
 	int		i;
 	int		j;
@@ -395,18 +445,18 @@ void	ft_add_coordinates_opencl(t_mlx *m, char ***stock)
 	i = 0;
 	j = 0;
 	index = 0;
-	m->coordinates_x = malloc(sizeof(float) * m->count);
-	m->coordinates_y = malloc(sizeof(float) * m->count);
-	m->coordinates_z = malloc(sizeof(float) * m->count);
+	m->coords_x = malloc(sizeof(float) * m->count);
+	m->coords_y = malloc(sizeof(float) * m->count);
+	m->coords_z = malloc(sizeof(float) * m->count);
 	while (stock[i] != NULL)
 	{
 		while (stock[i][j] != NULL)
 		{
-			m->coordinates_x[index] = (float)((j - m->width / 2.0)) /\
+			m->coords_x[index] = (float)((j - m->width / 2.0)) /\
 									(float)m->width;
-			m->coordinates_y[index] = (float)((i - m->depth / 2.0)) /\
+			m->coords_y[index] = (float)((i - m->depth / 2.0)) /\
 									(float)m->depth;
-			m->coordinates_z[index] = -(float)(ft_atoi(stock[i][j])) /\
+			m->coords_z[index] = -(float)(ft_atoi(stock[i][j])) /\
 						(float)(20.0 * ((m->height + 1) / 2));
 			j++;
 			index++;
@@ -416,25 +466,25 @@ void	ft_add_coordinates_opencl(t_mlx *m, char ***stock)
 	}
 }
 
-void	ft_add_coordinates(t_mlx *m, char ***stock)
+void	ft_add_coords(t_mlx *m, char ***stock)
 {
 	int		i;
 	int		j;
 
 	i = 0;
 	j = 0;
-	m->coordinates = malloc(sizeof(float **) * m->depth);
+	m->coords = malloc(sizeof(float **) * m->depth);
 	while (stock[i] != NULL)
 	{
-		m->coordinates[i] = malloc(sizeof(float *) * m->line_count[i]);
+		m->coords[i] = malloc(sizeof(float *) * m->l_c[i]);
 		while (stock[i][j] != NULL)
 		{
-			m->coordinates[i][j] = malloc(sizeof(float) * 3);
-			m->coordinates[i][j][0] = (float)((j - m->width / 2.0)) /\
+			m->coords[i][j] = malloc(sizeof(float) * 3);
+			m->coords[i][j][0] = (float)((j - m->width / 2.0)) /\
 									(float)m->width;
-			m->coordinates[i][j][1] = (float)((i - m->depth / 2.0)) /\
+			m->coords[i][j][1] = (float)((i - m->depth / 2.0)) /\
 									(float)m->depth;
-			m->coordinates[i][j][2] = -(float)(ft_atoi(stock[i][j])) /\
+			m->coords[i][j][2] = -(float)(ft_atoi(stock[i][j])) /\
 						(float)(20.0 * ((m->height + 1) / 2));
 			j++;
 		}
@@ -447,16 +497,17 @@ int		display(char ***stock, t_mlx m)
 {
 	ft_area(&m, stock);
 	m.scale = SCALE / ((m.width / 10) + 1);
-	if (m.opencl)
-		ft_add_coordinates_opencl(&m, stock);
-	ft_add_coordinates(&m, stock);
+	if (m.cl)
+		ft_add_coords_opencl(&m, stock);
+	else
+		ft_add_coords(&m, stock);
 	free_stock(stock);
 	create_matrix(&m);
 	m.mlx = mlx_init();
 	m.win = mlx_new_window(m.mlx, WINWIDTH, WINHEIGHT, "Fdf");
 	m.img = mlx_new_image(m.mlx, WINWIDTH, WINHEIGHT);
 	mlx_hook(m.win, 2, 1, key_hook, &m);
-	if (m.opencl)
+	if (m.cl)
 		mlx_expose_hook(m.win, expose_hook_opencl, &m);
 	else
 		mlx_expose_hook(m.win, expose_hook, &m);

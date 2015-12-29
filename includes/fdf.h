@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/26 17:30:47 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 10:52:31 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@ typedef struct			s_opencl
 	cl_command_queue	*queue;
 	cl_program			program;
 	cl_context			context;
-	cl_int				error;
-	cl_kernel			*kernel_x;
-	cl_kernel			*kernel_y;
-	cl_kernel			*kernel_z;
-	cl_kernel 			*rasterize_x;
-	cl_kernel 			*rasterize_y;
+	cl_int				err;
+	cl_kernel			*kl_x;
+	cl_kernel			*kl_y;
+	cl_kernel			*kl_z;
+	cl_kernel 			*r_x;
+	cl_kernel 			*r_y;
 	cl_mem				*arg_kernel;
 	size_t				maxGlobalWorkSize;
 	size_t				*maxWorkItemsSize;
@@ -72,22 +72,22 @@ typedef struct			s_opencl
 
 typedef struct	s_mlx
 {
-	int			scale;
+	float		scale;
 	int			face_on;
 	void		*mlx;
 	void		*win;
 	void		*img;
 	t_img		img_struct;
-	float		***coordinates;
-	int			*rasterize_x;
-	int			*rasterize_y;
-	float		*coordinates_x;
-	float		*coordinates_y;
-	float		*coordinates_z;
+	float		***coords;
+	int			*r_x;
+	int			*r_y;
+	float		*coords_x;
+	float		*coords_y;
+	float		*coords_z;
 	float		*result_x;
 	float		*result_y;
 	float		*result_z;
-	int*		line_count;
+	int*		l_c;
 	float*		matrix_w;
 	float*		matrix_x;
 	float*		matrix_y;
@@ -108,8 +108,8 @@ typedef struct	s_mlx
 	int			width;
 	int			depth;
 	int			count;
-	cl_mem		*buffer_objects;
-	t_opencl	*opencl;
+	cl_mem		*buf;
+	t_opencl	*cl;
 }				t_mlx;
 
 typedef struct	s_trigo
@@ -142,9 +142,9 @@ void			ft_draw_square_opencl(t_mlx *m, int i, int j, int index);
 void			ft_draw_wire_opencl(t_mlx *m, int i, int j, int index);
 void			initialize_opencl(t_mlx *m, t_opencl *opencl);
 void			free_stock(char ***stock);
-float*			update_coordinates(float* coordinates, t_mlx *m);
-void			ft_draw_wire(t_mlx *m, float*** coordinates, int i, int j);
-void			ft_draw_square(t_mlx *m, float*** coordinates, int i, int j);
+float*			update_coords(float* coords, t_mlx *m);
+void			ft_draw_wire(t_mlx *m, float*** coords, int i, int j);
+void			ft_draw_square(t_mlx *m, float*** coords, int i, int j);
 int				display(char ***stock, t_mlx m);
 void			ft_draw_line(t_mlx *m, int height1, int height2);
 int				ft_error(int argc, char **argv, int fd);

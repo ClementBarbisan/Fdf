@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/26 18:10:04 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 10:49:33 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ char	***ft_parser(t_parse *parse, t_mlx *m)
 	return (stock);
 }
 
-void	fill_coordinates(t_parse *parse, t_options options)
+void	fill_coords(t_parse *parse, t_options options)
 {
 	char		***stock;
 	t_opencl	opencl;
@@ -97,7 +97,7 @@ void	fill_coordinates(t_parse *parse, t_options options)
 	if (options.opencl > 0)
 		initialize_opencl(&m, &opencl);
 	else
-		m.opencl = NULL;
+		m.cl = NULL;
 	stock = ft_parser(parse, &m);
 	free_parse(parse);
 	display(stock, m);
@@ -184,7 +184,7 @@ int		main(int argc, char **argv)
 			ft_putendl("Parsing failed.");
 			return (0);
 		}
-		fill_coordinates(parse, options);
+		fill_coords(parse, options);
 	}
 	else
 		ft_putendl("Not enough arguments.");
