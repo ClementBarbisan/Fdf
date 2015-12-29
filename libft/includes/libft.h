@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/11/20 17:12:38 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/02 16:35:20 by                  ###   ########.fr       */
+/*   Updated: 2015/12/29 15:09:56 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,6 @@ char					*ft_utoa(unsigned int n);
 char					*ft_otoa(unsigned int n);
 char					*ft_lotoa(unsigned long n);
 void					ft_pow(int *current, int pow, int mult);
+char					*ft_ftoa(float f);
 
 #endif

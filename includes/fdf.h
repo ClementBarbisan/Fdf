@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 13:34:57 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 18:03:13 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,8 @@ typedef struct			s_opencl
 	cl_kernel			*kl_z;
 	cl_kernel 			*r_x;
 	cl_kernel 			*r_y;
-	cl_mem				*arg_kernel;
 	size_t				*globalWorkSize;
 	size_t				*localWorkSize;
-	char				*filename;
 	cl_uint				nb_device;
 }						t_opencl;
 

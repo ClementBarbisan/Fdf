@@ -6,11 +6,12 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 13:34:01 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 18:00:57 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fdf.h>
+#include <stdio.h>
 
 t_img	ft_img_init(t_mlx *m)
 {
@@ -493,7 +494,7 @@ void	set_work_size(t_mlx *m)
 {
 	size_t	tmp;
 
-	tmp = 512;
+	tmp = 1024;
 	m->cl->globalWorkSize = malloc(sizeof(size_t));
 	m->cl->localWorkSize = malloc(sizeof(size_t));
 	m->cl->globalWorkSize[0] = m->count;
@@ -518,10 +519,8 @@ void	ft_add_coords_opencl(t_mlx *m, char ***stock)
 	{
 		while (stock[i][j] != NULL)
 		{
-			m->coords_x[index] = (float)((j - m->width / 2.0)) /\
-									(float)m->width;
-			m->coords_y[index] = (float)((i - m->depth / 2.0)) /\
-									(float)m->depth;
+			m->coords_x[index] = (float)(j - m->width / 2.0) / (float)m->width;
+			m->coords_y[index] = (float)(i - m->depth / 2.0) / (float)m->depth;
 			m->coords_z[index] = -(float)(ft_atoi(stock[i][j])) /\
 						(float)(20.0 * ((m->height + 1) / 2));
 			j++;
