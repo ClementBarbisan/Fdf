@@ -6,15 +6,11 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:19:01 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 10:06:15 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 13:34:11 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <fdf.h>
-#include <libft.h>
 
 void		ft_pixel_put(t_img *img, int x, int y, int color)
 {

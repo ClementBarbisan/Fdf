@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 10:52:31 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 13:34:57 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <mlx.h>
+#include <fcntl.h>
 
 # define WINWIDTH 800
 # define WINHEIGHT 600
@@ -64,8 +66,8 @@ typedef struct			s_opencl
 	cl_kernel 			*r_x;
 	cl_kernel 			*r_y;
 	cl_mem				*arg_kernel;
-	size_t				maxGlobalWorkSize;
-	size_t				*maxWorkItemsSize;
+	size_t				*globalWorkSize;
+	size_t				*localWorkSize;
 	char				*filename;
 	cl_uint				nb_device;
 }						t_opencl;

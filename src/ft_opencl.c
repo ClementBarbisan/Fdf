@@ -6,12 +6,11 @@
 /*   By: cbarbisa <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/23 17:09:55 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 10:50:54 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 13:34:37 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fdf.h>
-#include <stdio.h>
 
 cl_context		create_context(t_opencl *cl_struct)
 {
@@ -153,6 +152,7 @@ cl_program	create_program(t_opencl *cl_struct, char *filename)
 		ft_putendl("Failed to build program.");
 		return (NULL);
 	}
+	free(file);
 	return (program);
 }
 
@@ -188,7 +188,8 @@ void	add_kernel_to_program(t_opencl *opencl)
 	}
 }
 
-void	initialize_opencl(t_mlx *m, t_opencl *opencl) {
+void	initialize_opencl(t_mlx *m, t_opencl *opencl) 
+{
 	opencl->err = 0;
 	opencl->context = create_context(opencl);
 	opencl->queue = create_commmand_queue(opencl);

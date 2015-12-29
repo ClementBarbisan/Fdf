@@ -6,14 +6,10 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 10:49:33 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 13:35:02 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libft.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <fcntl.h>
 #include <fdf.h>
 
 void	free_stock(char ***stock)

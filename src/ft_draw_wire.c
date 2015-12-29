@@ -6,16 +6,11 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 10:54:42 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 13:34:25 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx.h>
-#include <stdlib.h>
-#include <math.h>
 #include <fdf.h>
-#include <libft.h>
-#include <stdio.h>
 
 float	*update_coords(float *coords, t_mlx *m)
 {

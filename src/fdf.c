@@ -6,15 +6,11 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 10:52:58 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2015/12/29 13:34:01 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mlx.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <fdf.h>
-#include <libft.h>
 
 t_img	ft_img_init(t_mlx *m)
 {
@@ -76,11 +72,11 @@ void	read_buffer_coords(t_mlx *m)
 	m->result_x = malloc(sizeof(float) * m->count);
 	m->result_y = malloc(sizeof(float) * m->count);
 	m->result_z = malloc(sizeof(float) * m->count);
-	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], m->buf[6], CL_FALSE, \
+	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], m->buf[6], CL_TRUE, \
 			0, m->count * sizeof(float), m->result_x, 0, NULL, NULL);
-	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], m->buf[7], CL_FALSE, \
+	m->cl->err |= clEnqueueReadBuffer(m->cl->queue[0], m->buf[7], CL_TRUE, \
 			0, m->count * sizeof(float), m->result_y, 0, NULL, NULL);
-	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], m->buf[8], CL_TRUE, \
+	m->cl->err |= clEnqueueReadBuffer(m->cl->queue[0], m->buf[8], CL_TRUE, \
 			0, m->count * sizeof(float), m->result_z, 0, NULL, NULL);
 	if (m->cl->err != CL_SUCCESS)
 	{
@@ -91,23 +87,12 @@ void	read_buffer_coords(t_mlx *m)
 
 void	enqueue_kernel_coords(t_mlx *m)
 {
-	size_t *globalWorkSize;
-	size_t tmp;
-	size_t *localWorkSize;
-
-	globalWorkSize = malloc(sizeof(size_t));
-	localWorkSize = malloc(sizeof(size_t));
-	globalWorkSize[0] = m->count;
-	tmp = 512;
-	while (m->count % tmp != 0)
-		tmp--;
-	localWorkSize[0] = tmp;
-	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_x[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
-	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_y[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
-	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_z[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
+	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_x[0], 1, \
+			NULL, m->cl->globalWorkSize, m->cl->localWorkSize, 0, NULL, NULL);
+	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_y[0], 1, \
+			NULL, m->cl->globalWorkSize, m->cl->localWorkSize, 0, NULL, NULL);
+	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_z[0], 1, \
+			NULL, m->cl->globalWorkSize, m->cl->localWorkSize, 0, NULL, NULL);
 	if (m->cl->err != CL_SUCCESS)
 	{
 		ft_putendl("err on enqueue_kernel for coordinates");
@@ -161,9 +146,9 @@ void	read_buffers(t_mlx *m)
 	m->r_x = malloc(sizeof(int) * m->count);
 	m->r_y = malloc(sizeof(int) * m->count);
 	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], \
-			m->buf[12], CL_FALSE, \
+			m->buf[12], CL_TRUE, \
 			0, m->count * sizeof(int), m->r_x, 0, NULL, NULL);
-	m->cl->err = clEnqueueReadBuffer(m->cl->queue[0], \
+	m->cl->err |= clEnqueueReadBuffer(m->cl->queue[0], \
 			m->buf[13], CL_TRUE, \
 			0, m->count * sizeof(int), m->r_y, 0, NULL, NULL);
 	if (m->cl->err != CL_SUCCESS)
@@ -175,22 +160,12 @@ void	read_buffers(t_mlx *m)
 
 void	enqueue_kernel(t_mlx *m)
 {
-	size_t *globalWorkSize;
-	size_t tmp;
-	size_t *localWorkSize;
-
-	globalWorkSize = malloc(sizeof(size_t));
-	localWorkSize = malloc(sizeof(size_t));
-	globalWorkSize[0] = m->count;
-	tmp = 512;
-	while (m->count % tmp != 0)
-		tmp--;
-	localWorkSize[0] = tmp;
 	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], \
 			m->cl->r_x[0], 1, NULL, \
-			globalWorkSize, localWorkSize, 0, NULL, NULL);
-	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], \
-		m->cl->r_y[0], 1, NULL, globalWorkSize, localWorkSize, 0, NULL, NULL);
+			m->cl->globalWorkSize, m->cl->localWorkSize, 0, NULL, NULL);
+	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], \
+			m->cl->r_y[0], 1, NULL, m->cl->globalWorkSize, \
+			m->cl->localWorkSize, 0, NULL, NULL);
 	if (m->cl->err != CL_SUCCESS)
 	{
 		ft_putendl("err on enqueue_kernel for rasterize");
@@ -274,11 +249,22 @@ void	update_img(t_mlx *m)
 	m->img_struct = ft_img_init(m);
 }
 
-void	free_opencl(t_mlx *m)
+void	free_mem_objects(t_mlx *m)
 {
-	t_mlx *test;
+	int	i;
 
-	test = m;
+	i = 0;
+	while (i < 14)
+	{
+		if (m->buf[i] != 0)
+			clReleaseMemObject(m->buf[i]);
+		i++;
+	}
+	free(m->result_x);
+	free(m->result_y);
+	free(m->result_z);
+	free(m->r_x);
+	free(m->r_y);
 }
 
 void	update_opencl(t_mlx *m)
@@ -313,7 +299,7 @@ int		expose_hook_opencl(t_mlx *m)
 		i++;
 		j = 0;
 	}
-//	free_opencl(m);
+	free_mem_objects(m);
 	display_img(m);
 	return (0);
 }
@@ -380,11 +366,78 @@ void	change_rotation(int keycode, t_mlx *m)
 		m->rotation_x = compute_rotation(m->rotation_x - 0.1);
 }
 
+void	free_global_coordinates(t_mlx *m)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (i < m->depth)
+	{
+		while (j < m->l_c[i])
+		{
+			free(m->coords[i][j]);
+			j++;
+		}
+		free(m->coords[i]);
+		i++;
+		j = 0;
+	}
+	free(m->coords);
+}
+
+void	free_command_queues(t_mlx *m)
+{
+	cl_uint	i;
+
+	i = 0;
+	while (i < m->cl->nb_device)
+	{
+		clReleaseCommandQueue(m->cl->queue[i]);
+		i++;
+	}
+}
+
+void	free_kernel(t_mlx *m)
+{
+	cl_uint	i;
+
+	i = 0;
+	while (i < m->cl->nb_device)
+	{
+		free(m->cl->kl_x[i]);
+		free(m->cl->kl_y[i]);
+		free(m->cl->kl_z[i]);
+		free(m->cl->r_x[i]);
+		free(m->cl->r_y[i]);
+		i++;
+	}
+}
+
+void	free_all(t_mlx *m)
+{
+	if (m->cl)
+	{
+		free_command_queues(m);
+		free_kernel(m);
+		clReleaseProgram(m->cl->program);
+		clReleaseContext(m->cl->context);
+	}
+	else
+		free_global_coordinates(m);
+	free(m->l_c);
+	free(m->matrix_x);
+	free(m->matrix_y);
+	free(m->matrix_z);
+}
+
 int		key_hook(int keycode, t_mlx *m)
 {
 	if (keycode == 53)
 	{
 		mlx_destroy_window(m->mlx, m->win);
+		free_all(m);
 		exit(0);
 	}
 	else if (keycode >= 123 && keycode <= 126)
@@ -436,6 +489,19 @@ void	ft_area(t_mlx *m, char ***stock)
 	}
 }
 
+void	set_work_size(t_mlx *m)
+{
+	size_t	tmp;
+
+	tmp = 512;
+	m->cl->globalWorkSize = malloc(sizeof(size_t));
+	m->cl->localWorkSize = malloc(sizeof(size_t));
+	m->cl->globalWorkSize[0] = m->count;
+	while (m->count % tmp != 0)
+		tmp--;
+	m->cl->localWorkSize[0] = tmp;
+}
+
 void	ft_add_coords_opencl(t_mlx *m, char ***stock)
 {
 	int		i;
@@ -464,6 +530,7 @@ void	ft_add_coords_opencl(t_mlx *m, char ***stock)
 		i++;
 		j = 0;
 	}
+	set_work_size(m);
 }
 
 void	ft_add_coords(t_mlx *m, char ***stock)
