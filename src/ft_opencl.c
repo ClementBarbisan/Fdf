@@ -6,13 +6,13 @@
 /*   By: cbarbisa <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/23 17:09:55 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 14:38:18 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/02 16:19:50 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fdf.h>
 
-cl_context		create_context(t_opencl *cl_struct)
+cl_context				create_context(t_opencl *cl_struct)
 {
 	cl_uint					nb_platforms;
 	cl_context_properties	*context_properties;
@@ -32,19 +32,13 @@ cl_context		create_context(t_opencl *cl_struct)
 			CL_DEVICE_TYPE_GPU, NULL, NULL, &cl_struct->err);
 	if (cl_struct->err != CL_SUCCESS)
 	{
-		ft_putendl("Can't create OpenCL context for GPU, trying CPU...");
-		context = clCreateContextFromType(context_properties, \
-			CL_DEVICE_TYPE_CPU, NULL, NULL, &cl_struct->err);
-		if (cl_struct->err != CL_SUCCESS)
-		{
-			ft_putendl("Can't create OpenCL context for GPU, trying CPU...");
-			return (NULL);
-		}
+		ft_putendl("Can't create OpenCL context for GPU...");
+		return (NULL);
 	}
 	return (context);
 }
 
-void	*ft_realloc(char *line, size_t size)
+void					*ft_realloc(char *line, size_t size)
 {
 	char	*tmp;
 	int		i;
@@ -100,11 +94,9 @@ char					*open_file(char *filename)
 cl_command_queue		*create_commmand_queue(t_opencl *cl_struct)
 {
 	cl_command_queue		*queue;
-	size_t					i;
 
-	i = 0;
 	cl_struct->err = clGetDeviceIDs(cl_struct->platform_id, CL_DEVICE_TYPE_GPU,\
-			 0, NULL, &cl_struct->nb_device);
+			0, NULL, &cl_struct->nb_device);
 	if (cl_struct->err != CL_SUCCESS || cl_struct->nb_device <= 0)
 	{
 		ft_putendl("Failed to get number of devices available.");
@@ -118,21 +110,16 @@ cl_command_queue		*create_commmand_queue(t_opencl *cl_struct)
 		ft_putendl("Failed to get device IDs.");
 		return (NULL);
 	}
-	queue = malloc(sizeof(cl_command_queue) * cl_struct->nb_device);
-	while (i < cl_struct->nb_device)
-	{
-		queue[i] = clCreateCommandQueue(cl_struct->context, \
-				cl_struct->devices[i], 0, NULL);
-		i++;
-	}
+	queue = malloc(sizeof(cl_command_queue));
+	queue[0] = clCreateCommandQueue(cl_struct->context, \
+				cl_struct->devices[0], 0, NULL);
 	return (queue);
 }
 
-cl_program	create_program(t_opencl *cl_struct, char *filename)
+cl_program				create_program(t_opencl *cl_struct, char *filename)
 {
 	cl_program				program;
 	char					*file;
-	char					*options = "-cl-fast-relaxed-math";
 
 	file = NULL;
 	program = NULL;
@@ -146,7 +133,7 @@ cl_program	create_program(t_opencl *cl_struct, char *filename)
 		return (NULL);
 	}
 	cl_struct->err = clBuildProgram(program, cl_struct->nb_device, \
-			cl_struct->devices, options, NULL, NULL);
+			cl_struct->devices, NULL, NULL, NULL);
 	if (cl_struct->err != CL_SUCCESS)
 	{
 		ft_putendl("Failed to build program.");
@@ -156,39 +143,32 @@ cl_program	create_program(t_opencl *cl_struct, char *filename)
 	return (program);
 }
 
-void	create_kernel(t_opencl *opencl)
+void					create_kernel(t_opencl *opencl)
 {
-	opencl->kl_x = malloc(sizeof(cl_kernel) * opencl->nb_device);
-	opencl->kl_y = malloc(sizeof(cl_kernel) * opencl->nb_device);
-	opencl->kl_z = malloc(sizeof(cl_kernel) * opencl->nb_device);
-	opencl->r_x = malloc(sizeof(cl_kernel) * opencl->nb_device);
-	opencl->r_y = malloc(sizeof(cl_kernel) * opencl->nb_device);
+	opencl->kl_x = malloc(sizeof(cl_kernel));
+	opencl->kl_y = malloc(sizeof(cl_kernel));
+	opencl->kl_z = malloc(sizeof(cl_kernel));
+	opencl->r_x = malloc(sizeof(cl_kernel));
+	opencl->r_y = malloc(sizeof(cl_kernel));
 }
 
-void	add_kernel_to_program(t_opencl *opencl)
+void					add_kernel_to_program(t_opencl *opencl)
 {
-	size_t	i;
-
-	i = 0;
-	while (i < opencl->nb_device)
-	{
-		opencl->kl_x[i] = clCreateKernel(opencl->program, \
+	opencl->kl_x[0] = clCreateKernel(opencl->program, \
 		"compute_matrix", &opencl->err);
-		opencl->kl_y[i] = clCreateKernel(opencl->program, \
-			"compute_matrix", &opencl->err);
-		opencl->kl_z[i] = clCreateKernel(opencl->program, \
-			"compute_matrix", &opencl->err);
-		opencl->r_x[i] = clCreateKernel(opencl->program, \
-					"rasterize", &opencl->err);
-		opencl->r_y[i] = clCreateKernel(opencl->program, \
+	opencl->kl_y[0] = clCreateKernel(opencl->program, \
+		"compute_matrix", &opencl->err);
+	opencl->kl_z[0] = clCreateKernel(opencl->program, \
+		"compute_matrix", &opencl->err);
+	opencl->r_x[0] = clCreateKernel(opencl->program, \
 		"rasterize", &opencl->err);
-		if (opencl->err != CL_SUCCESS)
-			ft_putendl("Failed to create kernel.");
-		i++;
-	}
+	opencl->r_y[0] = clCreateKernel(opencl->program, \
+		"rasterize", &opencl->err);
+	if (opencl->err != CL_SUCCESS)
+		ft_putendl("Failed to create kernel.");
 }
 
-void	initialize_opencl(t_mlx *m, t_opencl *opencl) 
+void					initialize_opencl(t_mlx *m, t_opencl *opencl)
 {
 	opencl->err = 0;
 	opencl->context = create_context(opencl);

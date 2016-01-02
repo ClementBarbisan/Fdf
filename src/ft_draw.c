@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:19:01 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 15:19:51 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/02 15:56:41 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void		ft_pixel_put(t_img *img, int x, int y, int color)
 	img->data[pos + 2] = color >> 16;
 }
 
-int		ft_coord(t_line l, int x, int y)
+int			ft_coord(t_line l, int x, int y)
 {
 	int	pixel;
 
@@ -40,7 +40,7 @@ int		ft_coord(t_line l, int x, int y)
 	return (pixel);
 }
 
-int		set_color(int height)
+int			set_color(int height)
 {
 	int	color;
 
@@ -48,7 +48,7 @@ int		set_color(int height)
 	return (color);
 }
 
-void	add_color(int p1, int p2, t_line *l)
+void		add_color(int p1, int p2, t_line *l)
 {
 	if (l->height1 > l->height2 && p1 > p2)
 		l->color += ((float)(set_color(l->height1) - set_color(l->height2)) / \
@@ -64,7 +64,7 @@ void	add_color(int p1, int p2, t_line *l)
 				(float)(p2 - p1)) * l->increment;
 }
 
-void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
+void		ft_draw_x(t_mlx *m, t_line l, int x, int y)
 {
 	int		tmp_y;
 	int		shift;
@@ -85,7 +85,7 @@ void	ft_draw_x(t_mlx *m, t_line l, int x, int y)
 	}
 }
 
-void	ft_draw_y(t_mlx *m, t_line l, int x, int y)
+void		ft_draw_y(t_mlx *m, t_line l, int x, int y)
 {
 	int		tmp_x;
 	int		shift;
@@ -106,7 +106,7 @@ void	ft_draw_y(t_mlx *m, t_line l, int x, int y)
 	}
 }
 
-void	ft_draw_line(t_mlx *m, int height1, int height2)
+void		ft_draw_line(t_mlx *m, int height1, int height2)
 {
 	t_line	l;
 	int		x;
@@ -121,7 +121,7 @@ void	ft_draw_line(t_mlx *m, int height1, int height2)
 		ft_draw_y(m, l, x, y);
 }
 
-t_line	ft_draw_init(t_mlx *m, int height1, int height2)
+t_line		ft_draw_init(t_mlx *m, int height1, int height2)
 {
 	t_line l;
 

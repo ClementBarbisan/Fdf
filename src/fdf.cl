@@ -14,11 +14,11 @@ __kernel void compute_matrix(const float scale,
 __kernel void rasterize(__global float *x,
                        __global float *z,
                        float depth,
-                       float shift,
+                       int shift,
                        float scale,
                        float window,
                        __global int *result)
 {
     int gid = get_global_id(0);
-    result[gid] = (int)(((x[gid] / (z[gid] + depth)) * shift) * scale + window / 2.0);
+    result[gid] = (int)(((x[gid] / (z[gid] + depth)) * (float)shift) * scale + window / 2.0);
 }

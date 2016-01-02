@@ -6,13 +6,13 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 13:35:02 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/02 15:57:52 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fdf.h>
 
-void	free_stock(char ***stock)
+void		free_stock(char ***stock)
 {
 	int	i;
 	int	j;
@@ -36,7 +36,7 @@ void	free_stock(char ***stock)
 	stock = NULL;
 }
 
-void	free_parse(t_parse *parse)
+void		free_parse(t_parse *parse)
 {
 	t_parse	*old_node;
 
@@ -50,7 +50,7 @@ void	free_parse(t_parse *parse)
 	}
 }
 
-int		ft_ptrlength(char **ptr)
+int			ft_ptrlength(char **ptr)
 {
 	int	i;
 
@@ -60,7 +60,7 @@ int		ft_ptrlength(char **ptr)
 	return (i);
 }
 
-char	***ft_parser(t_parse *parse, t_mlx *m)
+char		***ft_parser(t_parse *parse, t_mlx *m)
 {
 	int		i;
 	int		count;
@@ -83,7 +83,7 @@ char	***ft_parser(t_parse *parse, t_mlx *m)
 	return (stock);
 }
 
-void	fill_coords(t_parse *parse, t_options options)
+void		fill_coords(t_parse *parse, t_options options)
 {
 	char		***stock;
 	t_opencl	opencl;
@@ -99,7 +99,7 @@ void	fill_coords(t_parse *parse, t_options options)
 	display(stock, m);
 }
 
-t_parse	*add_node(t_parse *old_node, char *line)
+t_parse		*add_node(t_parse *old_node, char *line)
 {
 	t_parse	*node;
 
@@ -123,7 +123,7 @@ t_parse	*add_node(t_parse *old_node, char *line)
 	return (node);
 }
 
-t_parse	*fill_parse(int argc, char **argv)
+t_parse		*fill_parse(int argc, char **argv)
 {
 	char	*line;
 	t_parse	*parse;
@@ -160,9 +160,9 @@ t_options	check_options(int argc, char **argv, t_options options)
 	return (options);
 }
 
-int		main(int argc, char **argv)
+int			main(int argc, char **argv)
 {
-	t_parse	*parse;
+	t_parse		*parse;
 	t_options	options;
 
 	parse = NULL;
@@ -187,7 +187,7 @@ int		main(int argc, char **argv)
 	return (0);
 }
 
-int		ft_error(int argc, char **argv, int fd)
+int			ft_error(int argc, char **argv, int fd)
 {
 	if (argc > 1)
 		fd = open(argv[1], O_RDONLY);

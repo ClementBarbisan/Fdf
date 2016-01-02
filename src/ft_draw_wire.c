@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 13:34:25 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/02 16:23:28 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,28 +54,21 @@ void	update_matrix(t_mlx *m)
 	m->matrix_x[2] = trigo.sin_y;
 	m->matrix_x[3] = m->pos_x;
 	m->matrix_y[0] = trigo.sin_x_sin_y * trigo.cos_z + trigo.cos_x * \
-					 trigo.sin_z;
+					trigo.sin_z;
 	m->matrix_y[1] = -trigo.sin_x_sin_y * trigo.sin_z + trigo.cos_x * \
-					 trigo.cos_z;
+					trigo.cos_z;
 	m->matrix_y[2] = -trigo.sin_x * trigo.cos_y;
 	m->matrix_y[3] = m->pos_y;
 	m->matrix_z[0] = -trigo.cos_x_sin_y * trigo.cos_z + trigo.sin_x * \
-					 trigo.sin_z;
+					trigo.sin_z;
 	m->matrix_z[1] = trigo.cos_x_sin_y * trigo.sin_z + trigo.sin_x * \
-					 trigo.cos_z;
+					trigo.cos_z;
 	m->matrix_z[2] = trigo.cos_x * trigo.cos_y;
 	m->matrix_z[3] = m->pos_z;
 }
 
-void	create_matrix(t_mlx *m)
+void	malloc_matrix(t_mlx *m)
 {
-	m->rotation_x = PI * 1.75;
-	m->rotation_y = 0.25;
-	m->rotation_z = 0;
-	m->pos_x = 0;
-	m->pos_y = 0;
-	m->pos_z = 0;
-	m->zoom = 1;
 	m->matrix_w = malloc(sizeof(float) * 4);
 	m->matrix_x = malloc(sizeof(float) * 4);
 	m->matrix_y = malloc(sizeof(float) * 4);
@@ -96,6 +89,18 @@ void	create_matrix(t_mlx *m)
 	m->matrix_w[1] = 0;
 	m->matrix_w[2] = 0;
 	m->matrix_w[3] = 1;
+}
+
+void	create_matrix(t_mlx *m)
+{
+	m->rotation_x = PI * 1.75;
+	m->rotation_y = 0.25;
+	m->rotation_z = 0;
+	m->pos_x = 0;
+	m->pos_y = 0;
+	m->pos_z = 0;
+	m->zoom = 1;
+	malloc_matrix(m);
 }
 
 int		set_coordinate(t_mlx *m, float xy, float z, int is_width)
@@ -172,14 +177,14 @@ void	ft_draw_square_opencl(t_mlx *m, int i, int j, int index)
 				m->coords_z[index + m->l_c[i] + j]) / (m->scale /\
 				m->zoom) * k) * (20 * ((m->height + 1) / 2)));
 			m->x1 = m->r_x[index + j] + ((m->r_x[index + j + 1] - \
-				m->r_x[index + j])  / m->scale / m->zoom) * k;
+				m->r_x[index + j]) / m->scale / m->zoom) * k;
 			m->y1 = m->r_y[index + j] + ((m->r_y[index + j + 1] - \
 				m->r_y[index + j]) / m->scale / m->zoom) * k;
 			m->x2 = m->r_x[index + m->l_c[i] + j] + ((m->r_x[index + m->l_c[i] \
-				+ j + 1] - m->r_x[index + m->l_c[i] + j])  / m->scale / \
+				+ j + 1] - m->r_x[index + m->l_c[i] + j]) / m->scale / \
 					m->zoom) * k;
-			m->y2 =  m->r_y[index + m->l_c[i] + j] + (( m->r_y[index + \
-				m->l_c[i] + j + 1] - m->r_y[index + m->l_c[i] + j])  / \
+			m->y2 = m->r_y[index + m->l_c[i] + j] + ((m->r_y[index + \
+				m->l_c[i] + j + 1] - m->r_y[index + m->l_c[i] + j]) / \
 					m->scale / m->zoom) * k;
 			ft_draw_line(m, height1, height2);
 			k++;
