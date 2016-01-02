@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2015/12/29 18:00:57 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/02 15:46:37 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -494,7 +494,7 @@ void	set_work_size(t_mlx *m)
 {
 	size_t	tmp;
 
-	tmp = 1024;
+	tmp = 512;
 	m->cl->globalWorkSize = malloc(sizeof(size_t));
 	m->cl->localWorkSize = malloc(sizeof(size_t));
 	m->cl->globalWorkSize[0] = m->count;
