@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/22 20:23:49 by cbarbisa          #+#    #+#             */
-/*   Updated: 2016/01/02 16:23:28 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/02 17:29:05 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	create_matrix(t_mlx *m)
 	malloc_matrix(m);
 }
 
-int		set_coordinate(t_mlx *m, float xy, float z, int is_width)
+int		set_coord(t_mlx *m, float xy, float z, int is_width)
 {
 	int	result;
 
@@ -158,13 +158,30 @@ void	ft_draw_wire_opencl(t_mlx *m, int i, int j, int index)
 	}
 }
 
+void	set_points_opencl(t_mlx *m, t_index idx, int index, int k)
+{
+	m->x1 = m->r_x[index + idx.j] + ((m->r_x[index + idx.j + 1] - \
+		m->r_x[index + idx.j]) / m->scale / m->zoom) * k;
+	m->y1 = m->r_y[index + idx.j] + ((m->r_y[index + idx.j + 1] - \
+		m->r_y[index + idx.j]) / m->scale / m->zoom) * k;
+	m->x2 = m->r_x[index + m->l_c[idx.i] + idx.j] + ((m->r_x[index + \
+		m->l_c[idx.i] + idx.j + 1] - m->r_x[index + m->l_c[idx.i] + idx.j]) / \
+		m->scale / m->zoom) * k;
+	m->y2 = m->r_y[index + m->l_c[idx.i] + idx.j] + ((m->r_y[index + \
+		m->l_c[idx.i] + idx.j + 1] - m->r_y[index + m->l_c[idx.i] + idx.j]) / \
+		m->scale / m->zoom) * k;
+}
+
 void	ft_draw_square_opencl(t_mlx *m, int i, int j, int index)
 {
 	int		height1;
 	int		height2;
+	t_index	idx;
 	int		k;
 
 	k = 0;
+	idx.i = i;
+	idx.j = j;
 	if (i + 1 < m->depth && j + 1 < m->l_c[i] && j + 1 < m->l_c[i + 1])
 	{
 		while (k < (int)m->scale * m->zoom)
@@ -176,16 +193,7 @@ void	ft_draw_square_opencl(t_mlx *m, int i, int j, int index)
 				(m->coords_z[index + m->l_c[i] + j + 1] - \
 				m->coords_z[index + m->l_c[i] + j]) / (m->scale /\
 				m->zoom) * k) * (20 * ((m->height + 1) / 2)));
-			m->x1 = m->r_x[index + j] + ((m->r_x[index + j + 1] - \
-				m->r_x[index + j]) / m->scale / m->zoom) * k;
-			m->y1 = m->r_y[index + j] + ((m->r_y[index + j + 1] - \
-				m->r_y[index + j]) / m->scale / m->zoom) * k;
-			m->x2 = m->r_x[index + m->l_c[i] + j] + ((m->r_x[index + m->l_c[i] \
-				+ j + 1] - m->r_x[index + m->l_c[i] + j]) / m->scale / \
-					m->zoom) * k;
-			m->y2 = m->r_y[index + m->l_c[i] + j] + ((m->r_y[index + \
-				m->l_c[i] + j + 1] - m->r_y[index + m->l_c[i] + j]) / \
-					m->scale / m->zoom) * k;
+			set_points_opencl(m, idx, index, k);
 			ft_draw_line(m, height1, height2);
 			k++;
 		}
@@ -197,54 +205,71 @@ void	ft_draw_wire(t_mlx *m, float ***coords, int i, int j)
 	int	height1;
 	int	height2;
 
-	m->x1 = set_coordinate(m, coords[i][j][0], coords[i][j][2], 1);
-	m->y1 = set_coordinate(m, coords[i][j][1], coords[i][j][2], 0);
+	m->x1 = set_coord(m, coords[i][j][0], coords[i][j][2], 1);
+	m->y1 = set_coord(m, coords[i][j][1], coords[i][j][2], 0);
 	height1 = m->coords[i][j][2] * (20 * ((m->height + 1) / 2));
 	if (j > 0)
 	{
-		m->x2 = set_coordinate(m, coords[i][j - 1][0], coords[i][j - 1][2], 1);
-		m->y2 = set_coordinate(m, coords[i][j - 1][1], coords[i][j - 1][2], 0);
+		m->x2 = set_coord(m, coords[i][j - 1][0], coords[i][j - 1][2], 1);
+		m->y2 = set_coord(m, coords[i][j - 1][1], coords[i][j - 1][2], 0);
 		height2 = m->coords[i][j - 1][2] * (20 * ((m->height + 1) / 2));
 		ft_draw_line(m, height1, height2);
 	}
 	if (i + 1 < m->depth && j < m->l_c[i + 1])
 	{
-		m->x2 = set_coordinate(m, coords[i + 1][j][0], coords[i + 1][j][2], 1);
-		m->y2 = set_coordinate(m, coords[i + 1][j][1], coords[i + 1][j][2], 0);
+		m->x2 = set_coord(m, coords[i + 1][j][0], coords[i + 1][j][2], 1);
+		m->y2 = set_coord(m, coords[i + 1][j][1], coords[i + 1][j][2], 0);
 		height2 = m->coords[i + 1][j][2] * (20 * ((m->height + 1) / 2));
 		ft_draw_line(m, height1, height2);
 	}
+}
+
+void	set_points(t_mlx *m, t_index idx, int k, float ***coords)
+{
+	int	tmp_1;
+	int	tmp_2;
+
+	tmp_1 = set_coord(m, coords[idx.i][idx.j][0], coords[idx.i][idx.j][2], 1);
+	tmp_2 = set_coord(m, coords[idx.i][idx.j + 1][0], coords[idx.i][idx.j + 1]\
+			[2], 1);
+	m->x1 = tmp_1 + ((tmp_2 - tmp_1) / m->scale / m->zoom) * k;
+	tmp_1 = set_coord(m, coords[idx.i][idx.j][1], coords[idx.i][idx.j][2], 0);
+	tmp_2 = set_coord(m, coords[idx.i][idx.j + 1][1], coords[idx.i][idx.j + 1]\
+			[2], 0);
+	m->y1 = tmp_1 + ((tmp_2 - tmp_1) / m->scale / m->zoom) * k;
+	tmp_1 = set_coord(m, coords[idx.i + 1][idx.j][0], coords[idx.i + 1][idx.j]\
+			[2], 1);
+	tmp_2 = set_coord(m, coords[idx.i + 1][idx.j + 1][0], coords[idx.i + 1]\
+			[idx.j + 1][2], 1);
+	m->x2 = tmp_1 + ((tmp_2 - tmp_1) / m->scale / m->zoom) * k;
+	tmp_1 = set_coord(m, coords[idx.i + 1][idx.j][1], coords[idx.i + 1][idx.j]\
+			[2], 0);
+	tmp_2 = set_coord(m, coords[idx.i + 1][idx.j + 1][1], coords[idx.i + 1]\
+			[idx.j + 1][2], 0);
+	m->y2 = tmp_1 + ((tmp_2 - tmp_1) / m->scale / m->zoom) * k;
 }
 
 void	ft_draw_square(t_mlx *m, float ***coords, int i, int j)
 {
 	int		height1;
 	int		height2;
-	int		tmp_1;
-	int		tmp_2;
+	t_index	index;
 	int		k;
 
 	k = 0;
+	index.i = i;
+	index.j = j;
 	if (i + 1 < m->depth && j + 1 < m->l_c[i] && j + 1 < m->l_c[i + 1])
 	{
 		while (k < m->scale * m->zoom)
 		{
 			height1 = ((m->coords[i][j][2] + (m->coords[i][j + 1][2] - \
-				m->coords[i][j][2]) / (m->scale / m->zoom) * k) * (20 * ((m->height + 1) / 2)));
+				m->coords[i][j][2]) / (m->scale / m->zoom) * k) * (20 * \
+				((m->height + 1) / 2)));
 			height2 = ((m->coords[i + 1][j][2] + (m->coords[i + 1][j + 1][2] - \
-				m->coords[i + 1][j][2]) / (m->scale / m->zoom) * k) * (20 * ((m->height + 1) / 2)));
-			tmp_1 = set_coordinate(m, coords[i][j][0], coords[i][j][2], 1);
-			tmp_2 = set_coordinate(m, coords[i][j + 1][0], coords[i][j + 1][2], 1);
-			m->x1 = tmp_1 + ((tmp_2 - tmp_1) / m->scale / m->zoom) * k;
-			tmp_1 = set_coordinate(m, coords[i][j][1], coords[i][j][2], 0);
-			tmp_2 = set_coordinate(m, coords[i][j + 1][1], coords[i][j + 1][2], 0);
-			m->y1 = tmp_1 + ((tmp_2 - tmp_1) / m->scale / m->zoom) * k;
-			tmp_1 = set_coordinate(m, coords[i + 1][j][0], coords[i + 1][j][2], 1);
-			tmp_2 = set_coordinate(m, coords[i + 1][j + 1][0], coords[i + 1][j + 1][2], 1);
-			m->x2 = tmp_1 + ((tmp_2 - tmp_1) / m->scale / m->zoom) * k;
-			tmp_1 = set_coordinate(m, coords[i + 1][j][1], coords[i + 1][j][2], 0);
-			tmp_2 = set_coordinate(m, coords[i + 1][j + 1][1], coords[i + 1][j + 1][2], 0);
-			m->y2 = tmp_1 + ((tmp_2 - tmp_1) / m->scale / m->zoom) * k;
+				m->coords[i + 1][j][2]) / (m->scale / m->zoom) * k) * \
+					(20 * ((m->height + 1) / 2)));
+			set_points(m, index, k, coords);
 			ft_draw_line(m, height1, height2);
 			k++;
 		}

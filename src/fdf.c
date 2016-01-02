@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2016/01/02 16:32:41 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/02 17:28:18 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,11 @@ void	read_buffer_coords(t_mlx *m)
 void	enqueue_kernel_coords(t_mlx *m)
 {
 	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_x[0], 1, \
-			NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
+		NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
 	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_y[0], 1, \
-			NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
+		NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
 	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_z[0], 1, \
-			NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
+		NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
 	if (m->cl->err != CL_SUCCESS)
 		ft_putendl("err on enqueue_kernel for coordinates");
 }

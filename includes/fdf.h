@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2016/01/02 16:31:26 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/02 17:14:36 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,12 @@ typedef struct			s_mlx
 	cl_mem				*buf;
 	t_opencl			*cl;
 }						t_mlx;
+
+typedef struct			s_index
+{
+	int					i;
+	int					j;
+}						t_index;
 
 typedef struct			s_trigo
 {
