@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/18 09:01:05 by cbarbisa          #+#    #+#             */
-/*   Updated: 2016/01/02 17:14:36 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/30 13:51:00 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ typedef struct			s_opencl
 
 typedef struct			s_mlx
 {
+	int					r_wth;
+	int					r_hht;
 	float				scale;
 	int					face_on;
 	void				*mlx;

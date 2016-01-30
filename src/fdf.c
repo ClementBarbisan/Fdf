@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/16 09:30:25 by cbarbisa          #+#    #+#             */
-/*   Updated: 2016/01/02 17:28:18 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/30 17:16:35 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,6 +294,18 @@ int		expose_hook_opencl(t_mlx *m)
 	return (0);
 }
 
+float	***update(int *i, int *j, float ***coords, t_mlx *m)
+{
+	if (m->r_hht == -1)
+		*i = m->depth - 1;
+	if (m->r_wth == -1)
+		*j = m->l_c[*i] - 1;
+	update_matrix(m);
+	coords = copy_coords(m);
+	update_img(m);
+	return (coords);
+}
+
 int		expose_hook(t_mlx *m)
 {
 	int		i;
@@ -302,21 +314,20 @@ int		expose_hook(t_mlx *m)
 
 	i = 0;
 	j = 0;
-	update_matrix(m);
-	coords = copy_coords(m);
-	update_img(m);
-	while (i < m->depth)
+	coords = NULL;
+	coords = update(&i, &j, coords, m);
+	while ((m->r_hht == -1 && i >= 0) || (m->r_hht == 1 && i < m->depth))
 	{
-		while (j < m->l_c[i])
+		while ((m->r_wth == -1 && j >= 0) || (m->r_wth == 1 && j < m->l_c[i]))
 		{
 			if (m->face_on == 1)
 				ft_draw_square(m, coords, i, j);
 			else
 				ft_draw_wire(m, coords, i, j);
-			j++;
+			j += m->r_wth;
 		}
-		i++;
-		j = 0;
+		i += m->r_hht;
+		j = m->r_wth == 1 ? 0 : m->l_c[i] - 1;
 	}
 	free_coords(coords, m);
 	display_img(m);
@@ -354,6 +365,14 @@ void	change_rotation(int keycode, t_mlx *m)
 		m->rotation_x = compute_rotation(m->rotation_x + 0.1);
 	else if (keycode == 15)
 		m->rotation_x = compute_rotation(m->rotation_x - 0.1);
+	if (m->rotation_y > PI)
+		m->r_wth = -1;
+	else
+		m->r_wth = 1;
+	if (m->rotation_x < PI)
+		m->r_hht = -1;
+	else
+		m->r_hht = 1;
 }
 
 void	free_global_coordinates(t_mlx *m)

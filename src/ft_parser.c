@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2016/01/02 15:57:52 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/01/30 15:24:48 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ void		fill_coords(t_parse *parse, t_options options)
 	t_opencl	opencl;
 	t_mlx		m;
 
+	m.r_wth = 1;
+	m.r_hht = 1;
 	m.face_on = options.faceon;
 	if (options.opencl > 0)
 		initialize_opencl(&m, &opencl);
