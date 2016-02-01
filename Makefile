@@ -16,7 +16,19 @@ SRC = $(addprefix ./src/,fdf.c \
 	ft_parser.c \
 	ft_draw_wire.c \
 	ft_draw.c \
-	ft_opencl.c)
+	ft_opencl.c \
+	coords.c \
+	coords_opencl.c \
+	free.c \
+	img.c \
+	opencl_buffers.c \
+	opencl_kernels.c \
+	update_position.c \
+	color_init.c \
+	matrix.c \
+	points.c \
+	opencl_create.c \
+	node.c)
 
 OBJ = $(addprefix ./obj/, $(notdir $(SRC:.c=.o)))
 
