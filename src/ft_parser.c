@@ -6,7 +6,7 @@
 /*   By: cbarbisa <cbarbisa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2013/12/17 15:24:03 by cbarbisa          #+#    #+#             */
-/*   Updated: 2016/02/01 10:22:18 by cbarbisa         ###   ########.fr       */
+/*   Updated: 2016/03/03 17:14:08 by cbarbisa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ t_options	check_options(int argc, char **argv, t_options options)
 		i++;
 	}
 	if (options.faceon == -1 && options.opencl == -1)
-		ft_putendl("Wrong options.");
+		ft_putendl("Wrong options[-opencl -face].");
 	return (options);
 }
 
@@ -91,7 +91,7 @@ int			main(int argc, char **argv)
 		fill_coords(parse, options);
 	}
 	else
-		ft_putendl("Not enough arguments.");
+		ft_putendl("Usage : ./Fdf <filename> [-opencl -face]");
 	return (0);
 }
 
