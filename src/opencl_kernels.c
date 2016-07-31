@@ -14,11 +14,11 @@
 
 void	enqueue_kernel_coords(t_mlx *m)
 {
-	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_x[0], 3, \
+	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_x[0], 1, \
 		NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
-	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_y[0], 3, \
+	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_y[0], 1, \
 		NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
-	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_z[0], 3, \
+	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], m->cl->kl_z[0], 1, \
 		NULL, m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
 	if (m->cl->err != CL_SUCCESS)
 		ft_putendl("err on enqueue_kernel for coordinates");
@@ -51,10 +51,10 @@ void	set_kernel_args_coords(t_mlx *m)
 void	enqueue_kernel(t_mlx *m)
 {
 	m->cl->err = clEnqueueNDRangeKernel(m->cl->queue[0], \
-			m->cl->r_x[0], 3, NULL, \
+			m->cl->r_x[0], 1, NULL, \
 			m->cl->global_work_size, m->cl->local_work_size, 0, NULL, NULL);
 	m->cl->err |= clEnqueueNDRangeKernel(m->cl->queue[0], \
-			m->cl->r_y[0], 3, NULL, m->cl->global_work_size, \
+			m->cl->r_y[0], 1, NULL, m->cl->global_work_size, \
 			m->cl->local_work_size, 0, NULL, NULL);
 	if (m->cl->err != CL_SUCCESS)
 		ft_putendl("err on enqueue_kernel for rasterize");

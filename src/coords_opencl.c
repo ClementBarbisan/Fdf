@@ -53,32 +53,15 @@ void	ft_add_coords_opencl(t_mlx *m, char ***stock)
 	set_work_size(m);
 }
 
-size_t          findMultiple(size_t value, size_t div)
-{
-	while (div > 1 && value % div)
-	div--;
-	return (div);
-}
-
 void	set_work_size(t_mlx *m)
 {
 	size_t	tmp;
-	size_t	multiple;
-	size_t	current_multiple;
 
-	multiple = findMultiple(m->count, 8);
-	tmp = m->count;
-	tmp /= multiple;
-	multiple *= multiple;
-	m->cl->global_work_size = malloc(sizeof(size_t) * 3);
-	m->cl->local_work_size = malloc(sizeof(size_t) * 3);
-	m->cl->global_work_size[0] = tmp;
-	m->cl->global_work_size[1] = tmp;
-	m->cl->global_work_size[2] = multiple;
-	m->cl->local_work_size[0] = findMultiple(tmp, 32);
-	m->cl->local_work_size[1] = findMultiple(tmp, 32);
-	current_multiple = findMultiple(multiple, 64);
-	while (m->cl->local_work_size[0] * m->cl->local_work_size[0] * current_multiple > 1024 && current_multiple > 1)
-		current_multiple = findMultiple(multiple, current_multiple - 1);
-	m->cl->local_work_size[2] = current_multiple;
+	tmp = 512;
+	m->cl->global_work_size = malloc(sizeof(size_t));
+	m->cl->local_work_size = malloc(sizeof(size_t));
+	m->cl->global_work_size[0] = m->count;
+	while (m->count % tmp != 0)
+		tmp--;
+	m->cl->local_work_size[0] = tmp;
 }

@@ -57,8 +57,6 @@ cl_command_queue		*create_commmand_queue(t_opencl *cl_struct)
 		ft_putendl("Failed to get device IDs.");
 		return (NULL);
 	}
-	if (cl_struct->nb_device > 1)
-		cl_struct->devices[0] = cl_struct->devices[1];
 	queue = malloc(sizeof(cl_command_queue));
 	queue[0] = clCreateCommandQueue(cl_struct->context, \
 				cl_struct->devices[0], 0, NULL);
